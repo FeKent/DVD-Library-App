@@ -4,14 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,26 +41,34 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DvdApp (modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello!",
-        modifier = modifier
-    )
+fun DvdApp(modifier: Modifier = Modifier) {
+    FilmCardPreview()
 }
 
 @Composable
 fun FilmCard(film: Film, modifier: Modifier = Modifier) {
     Card(modifier = modifier) {
-        Column() {
-            Row() {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Text(text = stringResource(film.date))
                 Text(text = stringResource(film.title))
             }
             Image(
+                modifier = modifier.fillMaxWidth(),
                 painter = painterResource(film.poster),
                 contentDescription = stringResource(film.description),
             )
-            Row() {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Text(text = stringResource(film.year))
                 Text(text = stringResource(film.director))
             }
