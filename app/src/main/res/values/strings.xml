@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DVD Library</string>
+    <string name="date_1">22/06/2023</string>
+    <string name="title_1">Resident Evil</string>
+    <string name="description_1">A movie poster of two women standing back to back holding guns</string>
+    <string name="year_1">2002</string>
+    <string name="director_1">Paul W. S. Anderson</string>
+    <string name="genre_1">Zombie, Horror</string>
+</resources>
