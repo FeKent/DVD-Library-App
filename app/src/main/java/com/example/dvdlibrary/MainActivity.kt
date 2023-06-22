@@ -53,12 +53,13 @@ fun FilmCard(film: Film, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
+            Text(text = stringResource(film.title))
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(text = "Added:")
                 Text(text = stringResource(film.date))
-                Text(text = stringResource(film.title))
             }
             Image(
                 modifier = modifier.fillMaxWidth(),
@@ -69,10 +70,21 @@ fun FilmCard(film: Film, modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = stringResource(film.year))
-                Text(text = stringResource(film.director))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Year: ")
+                    Text(text = stringResource(film.year))
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Director: ")
+                    Text(text = stringResource(film.director))
+                }
+                
             }
-            Text(text = stringResource(film.genre))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Genre: ")
+                Text(text = stringResource(film.genre))
+            }
         }
     }
 }
