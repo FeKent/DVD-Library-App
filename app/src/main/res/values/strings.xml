@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">DVD Library</string>
-    <string name="date_1">22/06/2023</string>
+    <string name="run_1">1hr 40</string>
     <string name="year_1">2002</string>
     <string name="director_1">Paul W. S. Anderson</string>
     <string name="genre_1">Zombie, Horror</string>

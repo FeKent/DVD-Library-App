@@ -38,8 +38,8 @@ fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Added:", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-            Text(text = stringResource(film.date), fontWeight = FontWeight.SemiBold)
+            Text(text = "Runtime:", fontSize = 13.sp, fontStyle = FontStyle.Italic)
+            Text(text = stringResource(film.runtime), fontWeight = FontWeight.SemiBold)
         }
         Image(
             modifier = modifier
@@ -76,10 +76,10 @@ fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-private fun FilmScreenPreview() {
+fun FilmScreenPreview() {
     FilmScreen(
         Film(
-            R.string.date_1,
+            R.string.run_1,
             "Resident Evil",
             R.drawable.poster_1,
             "A movie poster of two women standing back to back holding guns",

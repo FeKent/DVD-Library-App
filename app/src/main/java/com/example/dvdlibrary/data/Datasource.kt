@@ -7,7 +7,7 @@ class Datasource() {
     fun loadFilms(): List<Film> {
         return listOf<Film>(
             Film(
-                R.string.date_1,
+                R.string.run_1,
                 "Resident Evil",
                 R.drawable.poster_1,
                 "A movie poster of two women standing back to back holding guns",

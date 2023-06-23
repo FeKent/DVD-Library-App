@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
+import com.example.dvdlibrary.composables.FilmScreenPreview
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.model.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DvdApp() {
-    AddScreen()
+    IntroScreen()
 }
 
 
