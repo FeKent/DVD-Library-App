@@ -5,9 +5,9 @@ import androidx.annotation.StringRes
 
 data class Film(
    @StringRes val date: Int,
-   @StringRes val title: Int,
+   val title: String,
    @DrawableRes val poster: Int,
-   @StringRes val description: Int,
+   val description: String,
    @StringRes val year: Int,
    @StringRes val director: Int,
    @StringRes val genre: Int,

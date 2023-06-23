@@ -8,9 +8,9 @@ class Datasource() {
         return listOf<Film>(
             Film(
                 R.string.date_1,
-                R.string.title_1,
+                "Resident Evil",
                 R.drawable.poster_1,
-                R.string.description_1,
+                "A movie poster of two women standing back to back holding guns",
                 R.string.year_1,
                 R.string.director_1,
                 R.string.genre_1
