@@ -2,6 +2,7 @@ package com.example.dvdlibrary.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -102,6 +103,7 @@ fun FilmRow(film: Film, modifier: Modifier = Modifier) {
             .padding(horizontal = 24.dp)
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .fillMaxWidth()
+            .clickable {  }
     ) {
         Row() {
             Image(
