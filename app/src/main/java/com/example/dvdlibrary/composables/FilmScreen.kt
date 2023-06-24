@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dvdlibrary.Genre
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.model.Film
 
@@ -67,7 +68,7 @@ fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Genre: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
             Text(
-                text = stringResource(film.genre),
+                text = film.genre1.printName,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -85,7 +86,8 @@ fun FilmScreenPreview() {
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
             R.string.director_1,
-            R.string.genre_1
+            Genre.Zombie,
+            Genre.Action
         )
     )
 }

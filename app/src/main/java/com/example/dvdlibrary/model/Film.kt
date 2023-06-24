@@ -2,6 +2,7 @@ package com.example.dvdlibrary.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.example.dvdlibrary.Genre
 
 data class Film(
    @StringRes val runtime: Int,
@@ -10,5 +11,6 @@ data class Film(
    val description: String,
    @StringRes val year: Int,
    @StringRes val director: Int,
-   @StringRes val genre: Int,
+   val genre1: Genre,
+   val genre2: Genre? = null,
 )
