@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,9 +45,11 @@ fun IntroScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IntroTextField(modifier = Modifier.padding(top = 16.dp))
-        Spacer(modifier = Modifier.padding(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         Column(
-            modifier = Modifier,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             FilmRow(film = Film(0, "Scary Movie", 0, "Pongo", 0, 0, Genre.Parody))
@@ -63,7 +69,7 @@ fun IntroScreen(modifier: Modifier = Modifier) {
             FilmRow(film = Film(0, "Star Wars", 0, "Pongo", 0, 0, Genre.SciFi))
             FilmRow(film = Film(0, "D.E.B.S", 0, "Pongo", 0, 0, Genre.Lgbt))
         }
-        Spacer(modifier = Modifier.padding(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         FloatingActionButton(onClick = { /*TODO*/ }, content = ({
             Icon(
                 painter = painterResource(R.drawable.ic_add),
@@ -71,6 +77,7 @@ fun IntroScreen(modifier: Modifier = Modifier) {
                 tint = MaterialTheme.colorScheme.onBackground
             )
         }))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
