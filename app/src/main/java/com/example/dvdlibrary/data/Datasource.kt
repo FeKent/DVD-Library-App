@@ -1,6 +1,5 @@
 package com.example.dvdlibrary.data
 
-import com.example.dvdlibrary.Genre
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.model.Film
 

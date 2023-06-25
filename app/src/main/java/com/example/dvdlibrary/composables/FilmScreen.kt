@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dvdlibrary.Genre
 import com.example.dvdlibrary.R
+import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
 
 @Composable

@@ -40,11 +40,7 @@ fun AddScreen(modifier: Modifier = Modifier) {
         AddTextField(name = "Director")
         AddTextField(name = "Genre")
         Spacer(modifier = Modifier.padding(24.dp))
-        Row {
-            SearchFilms()
-            Spacer(modifier = Modifier.padding(24.dp))
-            AddFilms()
-        }
+        AddFilms()
     }
 }
 
@@ -61,16 +57,6 @@ fun AddTextField(name: String, modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-fun SearchFilms() {
-    FloatingActionButton(onClick = { /*TODO*/ }, content = ({
-        Icon(
-            painter = painterResource(R.drawable.ic_search),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-    }))
-}
 
 @Composable
 fun AddFilms() {
