@@ -64,6 +64,7 @@ fun IntroScreen(modifier: Modifier = Modifier) {
             FilmRow(film = Film(0, "The Notebook", 0, "Pongo", 0, 0, Genre.Romance))
             FilmRow(film = Film(0, "The Silence Of The Lambs", 0, "Pongo", 0, 0, Genre.Thriller))
             FilmRow(film = Film(0, "Star Wars", 0, "Pongo", 0, 0, Genre.SciFi))
+            FilmRow(film = Film(0, "D.E.B.S", 0, "Pongo", 0, 0, Genre.Lgbt))
         }
         Spacer(modifier = Modifier.padding(24.dp))
         FloatingActionButton(onClick = { /*TODO*/ }, content = ({

@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreenPreview
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
@@ -52,6 +53,7 @@ enum class Genre(val printName: String, @DrawableRes val icon: Int) {
     Western("Western", R.drawable.genre_western),
     Parody("Parody", R.drawable.genre_parody),
     Zombie("Zombie", R.drawable.genre_zombie),
+    Lgbt("LGBT+", R.drawable.genre_lgbt)
 }
 
 
