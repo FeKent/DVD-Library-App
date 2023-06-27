@@ -12,9 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.dvdlibrary.Screen.*
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
@@ -63,8 +60,9 @@ fun DvdApp() {
         Film(0, "D.E.B.S", 0, "Pongo", 0, "", Genre.Lgbt),
     )) }
 
+
     when (val cs = currentScreen){
-       Intro -> IntroScreen(films = films, onAddBtnTap = {currentScreen = Add}, onFilmTap = {film -> currentScreen = Details(film)})
+       Intro -> IntroScreen(films = films.sortedBy(Film::title), onAddBtnTap = {currentScreen = Add}, onFilmTap = {film -> currentScreen = Details(film)})
        Add -> AddScreen(onFilmEntered = {
            films = films+it
            currentScreen = Intro
