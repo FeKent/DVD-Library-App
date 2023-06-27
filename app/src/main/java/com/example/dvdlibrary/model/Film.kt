@@ -10,7 +10,7 @@ data class Film(
    @DrawableRes val poster: Int,
    val description: String,
    @StringRes val year: Int,
-   @StringRes val director: Int,
+   val director: String,
    val genre1: Genre,
    val genre2: Genre? = null,
 )

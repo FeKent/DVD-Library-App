@@ -12,7 +12,7 @@ class Datasource() {
                 R.drawable.poster_1,
                 "A movie poster of two women standing back to back holding guns",
                 R.string.year_1,
-                R.string.director_1,
+                "Paul W. S. Anderson",
                 Genre.Zombie,
                 Genre.Action
             ),

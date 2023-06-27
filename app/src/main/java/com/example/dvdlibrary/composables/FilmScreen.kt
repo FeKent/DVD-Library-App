@@ -61,7 +61,7 @@ fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Director: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-                Text(text = stringResource(film.director), fontWeight = FontWeight.SemiBold)
+                Text(text = film.director, fontWeight = FontWeight.SemiBold)
             }
 
         }
@@ -85,7 +85,7 @@ fun FilmScreenPreview() {
             R.drawable.poster_1,
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
-            R.string.director_1,
+            "Paul W. S. Anderson",
             Genre.Zombie,
             Genre.Action
         )

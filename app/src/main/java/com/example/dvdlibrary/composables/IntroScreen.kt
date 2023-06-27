@@ -39,7 +39,7 @@ import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
 
 @Composable
-fun IntroScreen(modifier: Modifier = Modifier) {
+fun IntroScreen(films: List<Film>, onAddBtnTap: () -> Unit, onFilmTap: (Film) -> Unit ,modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -52,25 +52,12 @@ fun IntroScreen(modifier: Modifier = Modifier) {
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            FilmRow(film = Film(0, "Scary Movie", 0, "Pongo", 0, 0, Genre.Parody))
-            FilmRow(film = Film(R.string.run_1, "Resident Evil", R.drawable.poster_1, "Resident Evil", R.string.year_1, R.string.director_1, Genre.Zombie))
-            FilmRow(film = Film(0, "Lord of the Rings", 0, "Pongo", 0, 0, Genre.Fantasy))
-            FilmRow(film = Film(0, "A League of Their Own", 0, "Pongo", 0, 0, Genre.Sports))
-            FilmRow(film = Film(0, "The Good, The Bad, And The Ugly", 0, "Pongo", 0, 0, Genre.Western))
-            FilmRow(film = Film(0, "The Exorcist", 0, "Pongo", 0, 0, Genre.Horror))
-            FilmRow(film = Film(0, "Die Hard", 0, "Pongo", 0, 0, Genre.Action))
-            FilmRow(film = Film(0, "Pirates Of The Caribbean", 0, "Pongo", 0, 0, Genre.Adventure))
-            FilmRow(film = Film(0, "White Chicks", 0, "Pongo", 0, 0, Genre.Comedy))
-            FilmRow(film = Film(0, "The Godfather", 0, "Pongo", 0, 0, Genre.Drama))
-            FilmRow(film = Film(0, "Repo: The Genetic Opera", 0, "Pongo", 0, 0, Genre.Musical))
-            FilmRow(film = Film(0, "Knives Out", 0, "Pongo", 0, 0, Genre.Mystery))
-            FilmRow(film = Film(0, "The Notebook", 0, "Pongo", 0, 0, Genre.Romance))
-            FilmRow(film = Film(0, "The Silence Of The Lambs", 0, "Pongo", 0, 0, Genre.Thriller))
-            FilmRow(film = Film(0, "Star Wars", 0, "Pongo", 0, 0, Genre.SciFi))
-            FilmRow(film = Film(0, "D.E.B.S", 0, "Pongo", 0, 0, Genre.Lgbt))
+            films.forEach{
+                FilmRow(film = it, onFilmTap = onFilmTap)
+            }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        FloatingActionButton(onClick = { /*TODO*/ }, content = ({
+        FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
             Icon(
                 painter = painterResource(R.drawable.ic_add),
                 contentDescription = null,
@@ -102,13 +89,13 @@ fun IntroTextField(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FilmRow(film: Film, modifier: Modifier = Modifier) {
+fun FilmRow(film: Film, onFilmTap: (Film) -> Unit ,modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(horizontal = 24.dp)
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onFilmTap(film) }
     ) {
         Row() {
             Spacer(modifier = modifier.padding(4.dp))

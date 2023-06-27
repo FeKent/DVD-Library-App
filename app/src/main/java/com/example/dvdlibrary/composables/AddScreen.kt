@@ -1,11 +1,14 @@
 package com.example.dvdlibrary.composables
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,9 +27,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
+import com.example.dvdlibrary.data.Genre
+import com.example.dvdlibrary.model.Film
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun AddScreen(modifier: Modifier = Modifier) {
+fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
+
+    var title by remember { mutableStateOf("") }
+    var runTime by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf("") }
+    var director by remember { mutableStateOf("") }
+    var genre by remember { mutableStateOf(Genre.Action) }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,33 +48,87 @@ fun AddScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.padding(8.dp))
         Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.padding(32.dp))
-        AddTextField(name = "Title")
-        AddTextField(name = "Runtime")
-        AddTextField(name = "Year")
-        AddTextField(name = "Director")
-        AddTextField(name = "Genre")
+        AddTextField(label = "Title", value = title, onValueChange = { title = it })
+        AddTextField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
+        AddTextField(label = "Year", value = year, onValueChange = { year = it })
+        AddTextField(label = "Director", value = director, onValueChange = { director = it })
+        AddGenreField(selectedItem = genre, onGenreSelected = {genre = it})
         Spacer(modifier = Modifier.padding(24.dp))
-        AddFilms()
+        AddFilms(onSaveTap = {
+            onFilmEntered(
+                Film(
+                    runTime.toInt(),
+                    title,
+                    0,
+                    "",
+                    year.toInt(),
+                    director,
+                    genre
+                )
+            )
+        })
     }
 }
 
 @Composable
-fun AddTextField(name: String, modifier: Modifier = Modifier) {
+fun AddTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
-    var addition by remember { mutableStateOf("") }
 
     TextField(
-        value = addition,
-        onValueChange = { addition = it },
-        label = { Text(text = name) },
+        value = value,
+        onValueChange = { onValueChange(it) },
+        label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
     )
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddFilms() {
-    FloatingActionButton(onClick = { /*TODO*/ }, content = ({
+fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit, modifier: Modifier = Modifier) {
+
+
+    var expanded by remember { mutableStateOf(false) }
+
+
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+        TextField(modifier = Modifier.menuAnchor(), value = selectedItem.printName, onValueChange = {}, readOnly = true, label = {
+            Text(text = "Genre")
+        }, trailingIcon = {
+            TrailingIcon(expanded = expanded)
+        }, colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+
+        val context = LocalContext.current
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            Genre.values().forEach { option ->
+                DropdownMenuItem(
+                    { Text(text = option.printName) },
+                    onClick = {
+                        onGenreSelected(option)
+                        Toast.makeText(context, option.printName, Toast.LENGTH_SHORT).show()
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+ @Composable
+fun AddFilms(onSaveTap: () -> Unit) {
+    FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
             contentDescription = null,
