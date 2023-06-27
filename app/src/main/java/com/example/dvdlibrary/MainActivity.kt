@@ -12,11 +12,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.dvdlibrary.Screen.*
 import com.example.dvdlibrary.composables.AddScreen
-import com.example.dvdlibrary.composables.FilmRow
 import com.example.dvdlibrary.composables.FilmScreen
-import com.example.dvdlibrary.composables.FilmScreenPreview
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
@@ -68,10 +69,8 @@ fun DvdApp() {
            films = films+it
            currentScreen = Intro
        })
-       is Details -> FilmScreen(cs.film)
+       is Details -> FilmScreen(cs.film, onReturnTap = {currentScreen = Intro})
    }
-
-
 }
 
 
@@ -80,6 +79,4 @@ sealed class Screen{
     object Add : Screen ()
     class Details(val film: Film) : Screen()
 }
-
-
 

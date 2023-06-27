@@ -1,6 +1,7 @@
 package com.example.dvdlibrary.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +25,7 @@ import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
 
 @Composable
-fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
+fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -34,7 +35,8 @@ fun FilmScreen(film: Film, modifier: Modifier = Modifier) {
             text = film.title,
             fontSize = 28.sp,
             fontWeight = FontWeight.SemiBold,
-        )
+            modifier = modifier.clickable { onReturnTap() }
+            )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -87,7 +89,7 @@ fun FilmScreenPreview() {
             R.string.year_1,
             "Paul W. S. Anderson",
             Genre.Zombie,
-            Genre.Action
-        )
+            Genre.Action,
+        ), onReturnTap = {}
     )
 }

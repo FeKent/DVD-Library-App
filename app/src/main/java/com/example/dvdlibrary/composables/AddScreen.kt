@@ -121,11 +121,6 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit, modifie
 }
 
 
-
-
-
-
-
  @Composable
 fun AddFilms(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
