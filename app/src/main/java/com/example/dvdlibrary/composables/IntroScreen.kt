@@ -76,6 +76,7 @@ fun IntroTextField(modifier: Modifier = Modifier) {
     TextField(
         value = searchItem,
         onValueChange = { searchItem = it },
+        //Here is where the search functionality needs to be added!
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
