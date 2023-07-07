@@ -84,9 +84,9 @@ fun IntroTextField(modifier: Modifier = Modifier) {
         singleLine = true,
         modifier = modifier,
         label = { Text(text = "Film Name", fontStyle = FontStyle.Italic) },
-        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), null) }
+        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), null) },
+        trailingIcon = { Icon(painter = painterResource(R.drawable.ic_clear), null)}
     )
-
 }
 
 @Composable
