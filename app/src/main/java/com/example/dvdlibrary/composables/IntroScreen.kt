@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,16 +34,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.dvdlibrary.R
-import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
 
 @Composable
-fun IntroScreen(films: List<Film>, onAddBtnTap: () -> Unit, onFilmTap: (Film) -> Unit ,modifier: Modifier = Modifier) {
+fun IntroScreen(
+    films: List<Film>,
+    onAddBtnTap: () -> Unit,
+    onFilmTap: (Film) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var searchItem by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IntroTextField(modifier = Modifier.padding(top = 16.dp))
+        SearchTextField(
+            searchTerm = searchItem,
+            onSearchTermChange = // search functionality logic - need to update state,
+            ,modifier = Modifier.padding(top = 16.dp),
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
             modifier = Modifier
@@ -52,7 +61,7 @@ fun IntroScreen(films: List<Film>, onAddBtnTap: () -> Unit, onFilmTap: (Film) ->
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            films.forEach{
+            films.forEach {
                 FilmRow(film = it, onFilmTap = onFilmTap)
             }
         }
@@ -69,14 +78,15 @@ fun IntroScreen(films: List<Film>, onAddBtnTap: () -> Unit, onFilmTap: (Film) ->
 }
 
 @Composable
-fun IntroTextField(modifier: Modifier = Modifier) {
-
-    var searchItem by remember { mutableStateOf("") }
+fun SearchTextField(
+    searchTerm: String,
+    onSearchTermChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     TextField(
-        value = searchItem,
-        onValueChange = { searchItem = it },
-        //Here is where the search functionality needs to be added!
+        value = searchTerm,
+        onValueChange = { onSearchTermChange(it) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
@@ -84,13 +94,13 @@ fun IntroTextField(modifier: Modifier = Modifier) {
         singleLine = true,
         modifier = modifier,
         label = { Text(text = "Film Name", fontStyle = FontStyle.Italic) },
-        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), null) },
-        trailingIcon = { Icon(painter = painterResource(R.drawable.ic_clear), null)}
+        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
+        trailingIcon = { Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon") }
     )
 }
 
 @Composable
-fun FilmRow(film: Film, onFilmTap: (Film) -> Unit ,modifier: Modifier = Modifier) {
+fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(horizontal = 24.dp)
