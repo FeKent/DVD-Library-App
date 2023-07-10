@@ -46,7 +46,7 @@ fun IntroScreen(
     var searchItem by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier,
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchTextField(
