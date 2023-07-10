@@ -51,8 +51,10 @@ fun IntroScreen(
     ) {
         SearchTextField(
             searchTerm = searchItem,
-            onSearchTermChange = // search functionality logic - need to update state,
-            ,modifier = Modifier.padding(top = 16.dp),
+            onSearchTermChange = {
+                
+            },
+            modifier = Modifier.padding(top = 16.dp),
         )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
@@ -75,6 +77,10 @@ fun IntroScreen(
         }))
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+
+
 }
 
 @Composable
