@@ -15,12 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -29,8 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.model.Film
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
@@ -74,8 +72,7 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
 fun AddTextField(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onValueChange: (String) -> Unit
 ) {
 
 
@@ -89,7 +86,7 @@ fun AddTextField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit, modifier: Modifier = Modifier) {
+fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -102,8 +99,6 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit, modifie
             TrailingIcon(expanded = expanded)
         }, colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
-
-        val context = LocalContext.current
 
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             Genre.values().forEach { option ->
