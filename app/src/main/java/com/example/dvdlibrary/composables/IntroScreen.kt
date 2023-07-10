@@ -63,9 +63,11 @@ fun IntroScreen(
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            films.forEach {
-                FilmRow(film = it, onFilmTap = onFilmTap)
-            }
+            films
+                .filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+                .forEach {
+                    FilmRow(film = it, onFilmTap = onFilmTap)
+                }
         }
         Spacer(modifier = Modifier.height(24.dp))
         FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
