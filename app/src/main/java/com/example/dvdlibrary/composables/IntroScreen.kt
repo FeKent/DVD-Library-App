@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -54,6 +55,7 @@ fun IntroScreen(
             onSearchTermChange = {
                 searchItem = it
             },
+            onClearTap = { searchItem = ""},
             modifier = Modifier.padding(top = 16.dp),
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -86,6 +88,7 @@ fun IntroScreen(
 fun SearchTextField(
     searchTerm: String,
     onSearchTermChange: (String) -> Unit,
+    onClearTap: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -100,7 +103,11 @@ fun SearchTextField(
         modifier = modifier,
         label = { Text(text = "Film Name", fontStyle = FontStyle.Italic) },
         leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
-        trailingIcon = { Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon") }
+        trailingIcon = {
+            IconButton(onClick = { onClearTap() }) {
+                Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon")
+            }
+        }
     )
 }
 
