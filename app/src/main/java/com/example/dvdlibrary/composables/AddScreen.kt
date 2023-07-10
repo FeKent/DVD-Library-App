@@ -111,7 +111,6 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit, modifie
                     { Text(text = option.printName) },
                     onClick = {
                         onGenreSelected(option)
-                        Toast.makeText(context, option.printName, Toast.LENGTH_SHORT).show()
                         expanded = false
                     }
                 )
