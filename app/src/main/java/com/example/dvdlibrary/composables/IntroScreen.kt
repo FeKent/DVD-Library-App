@@ -80,9 +80,6 @@ fun IntroScreen(
 }
 
 
-
-}
-
 @Composable
 fun SearchTextField(
     searchTerm: String,
