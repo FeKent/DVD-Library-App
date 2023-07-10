@@ -52,7 +52,7 @@ fun IntroScreen(
         SearchTextField(
             searchTerm = searchItem,
             onSearchTermChange = {
-                
+                searchItem = it
             },
             modifier = Modifier.padding(top = 16.dp),
         )
