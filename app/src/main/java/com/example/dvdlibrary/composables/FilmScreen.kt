@@ -82,6 +82,7 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
 fun FilmScreenPreview() {
     FilmScreen(
         Film(
+            0,
             R.string.run_1,
             "Resident Evil",
             R.drawable.poster_1,

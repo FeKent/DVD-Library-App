@@ -55,6 +55,7 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
         AddFilms(onSaveTap = {
             onFilmEntered(
                 Film(
+                    id = 0,
                     runTime.toInt(),
                     title,
                     0,
