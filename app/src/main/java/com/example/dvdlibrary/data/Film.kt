@@ -1,9 +1,11 @@
-package com.example.dvdlibrary.model
+package com.example.dvdlibrary.data
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.room.Entity
 import com.example.dvdlibrary.data.Genre
 
+@Entity
 data class Film(
    @StringRes val runtime: Int,
    val title: String,

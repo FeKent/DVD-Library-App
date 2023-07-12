@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.dvdlibrary.R
-import com.example.dvdlibrary.model.Film
+import com.example.dvdlibrary.data.Film
 
 @Composable
 fun IntroScreen(

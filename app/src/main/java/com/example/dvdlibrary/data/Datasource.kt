@@ -1,7 +1,6 @@
 package com.example.dvdlibrary.data
 
 import com.example.dvdlibrary.R
-import com.example.dvdlibrary.model.Film
 
 class Datasource() {
     fun loadFilms(): List<Film> {

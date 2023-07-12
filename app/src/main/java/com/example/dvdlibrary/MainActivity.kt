@@ -17,7 +17,7 @@ import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.Genre
-import com.example.dvdlibrary.model.Film
+import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 
 
@@ -62,7 +62,7 @@ fun DvdApp() {
 
 
     when (val cs = currentScreen){
-       Intro -> IntroScreen(films = films.sortedBy(Film::title), onAddBtnTap = {currentScreen = Add}, onFilmTap = {film -> currentScreen = Details(film)})
+       Intro -> IntroScreen(films = films.sortedBy(Film::title), onAddBtnTap = {currentScreen = Add}, onFilmTap = { film -> currentScreen = Details(film)})
        Add -> AddScreen(onFilmEntered = {
            films = films+it
            currentScreen = Intro

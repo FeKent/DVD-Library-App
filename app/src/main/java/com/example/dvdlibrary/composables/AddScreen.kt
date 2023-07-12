@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Genre
-import com.example.dvdlibrary.model.Film
+import com.example.dvdlibrary.data.Film
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
