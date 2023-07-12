@@ -12,10 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.room.Room
 import com.example.dvdlibrary.Screen.*
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
+import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
@@ -41,6 +44,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DvdApp() {
     var currentScreen by remember { mutableStateOf<Screen>(Intro) }
+
+    val appContext = LocalContext.current.applicationContext
+    val database by remember { mutableStateOf(
+        Room.databaseBuilder(
+        appContext,
+        DvdAppDatabase::class.java,
+        "database-name"
+    ).build()) }
+
+
     var films by remember { mutableStateOf(listOf(
         Film(0, 0, "Scary Movie", 0, "Pongo", 0, "", Genre.Parody),
         Film(0, R.string.run_1, "Resident Evil", R.drawable.poster_1, "Resident Evil", R.string.year_1, "Paul W. S. Anderson", Genre.Zombie),
