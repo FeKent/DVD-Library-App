@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +25,7 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -54,15 +56,16 @@ fun DvdApp() {
         DvdAppDatabase::class.java,
         "database-name"
     ).build()) }
-
+    val coroutineScope = rememberCoroutineScope()
     val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
 
 
     when (val cs = currentScreen){
        Intro -> IntroScreen(films = films.sortedBy(Film::title), onAddBtnTap = {currentScreen = Add}, onFilmTap = { film -> currentScreen = Details(film)})
-       Add -> AddScreen(onFilmEntered = {
+       Add -> AddScreen(onFilmEntered = {coroutineScope.launch {
            database.filmsDao().insertFilm(it)
            currentScreen = Intro
+       }
        })
        is Details -> FilmScreen(cs.film, onReturnTap = {currentScreen = Intro})
    }

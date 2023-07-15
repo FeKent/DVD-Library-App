@@ -8,7 +8,7 @@ import java.util.concurrent.Flow
 @Dao
 interface FilmsDao {
     @Insert
-    fun insertFilm(film: Film)
+    suspend fun insertFilm(film: Film)
 
     @Query ("SELECT * FROM film")
     fun allFilms(): kotlinx.coroutines.flow.Flow<List<Film>>
