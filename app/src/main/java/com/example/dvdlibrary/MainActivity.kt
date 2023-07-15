@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Room
 import com.example.dvdlibrary.Screen.Add
 import com.example.dvdlibrary.Screen.Details
@@ -54,7 +55,7 @@ fun DvdApp() {
         "database-name"
     ).build()) }
 
-    val films = database.filmsDao().allFilms()
+    val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
 
 
     when (val cs = currentScreen){
