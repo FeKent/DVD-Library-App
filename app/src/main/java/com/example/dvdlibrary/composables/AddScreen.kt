@@ -58,7 +58,7 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
                     id = 0,
                     runTime.toInt(),
                     title,
-                    0,
+                    R.drawable.generic_poster,
                     "",
                     year.toInt(),
                     director,

@@ -49,7 +49,7 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
                 .fillMaxWidth()
                 .height(600.dp)
                 .width(300.dp),
-            painter = painterResource(film.poster),
+            painter = painterResource(id = R.drawable.generic_poster),
             contentDescription = film.description,
         )
         Row(
@@ -85,7 +85,7 @@ fun FilmScreenPreview() {
             0,
             R.string.run_1,
             "Resident Evil",
-            R.drawable.poster_1,
+            R.drawable.generic_poster,
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
             "Paul W. S. Anderson",

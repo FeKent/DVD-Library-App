@@ -50,31 +50,44 @@ fun DvdApp() {
     var currentScreen by remember { mutableStateOf<Screen>(Intro) }
 
     val appContext = LocalContext.current.applicationContext
-    val database by remember { mutableStateOf(
-        Room.databaseBuilder(
-        appContext,
-        DvdAppDatabase::class.java,
-        "database-name"
-    ).build()) }
+    val database by remember {
+        mutableStateOf(
+            Room.databaseBuilder(
+                appContext,
+                DvdAppDatabase::class.java,
+                "database-name"
+            ).build()
+        )
+    }
     val coroutineScope = rememberCoroutineScope()
     val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
 
 
-    when (val cs = currentScreen){
-       Intro -> IntroScreen(films = films.sortedBy(Film::title), onAddBtnTap = {currentScreen = Add}, onFilmTap = { film -> currentScreen = Details(film)})
-       Add -> AddScreen(onFilmEntered = {coroutineScope.launch {
-           database.filmsDao().insertFilm(it)
-           currentScreen = Intro
-       }
-       })
-       is Details -> FilmScreen(cs.film, onReturnTap = {currentScreen = Intro})
-   }
+    when (val cs = currentScreen) {
+        Intro -> IntroScreen(
+            films = films.sortedBy(Film::title),
+            onAddBtnTap = { currentScreen = Add },
+            onFilmTap = { film -> currentScreen = Details(film) },
+            removeFilm = {coroutineScope.launch {
+                database.filmsDao().delete(it)
+            }}
+        )
+
+        Add -> AddScreen(onFilmEntered = {
+            coroutineScope.launch {
+                database.filmsDao().insertFilm(it)
+                currentScreen = Intro
+            }
+        })
+
+        is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
+    }
 }
 
 
-sealed class Screen{
-    object Intro : Screen ()
-    object Add : Screen ()
+sealed class Screen {
+    object Intro : Screen()
+    object Add : Screen()
     class Details(val film: Film) : Screen()
 }
 
