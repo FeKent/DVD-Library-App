@@ -4,7 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import java.util.concurrent.Flow
+import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface FilmsDao {
@@ -15,5 +16,5 @@ interface FilmsDao {
     suspend fun delete(film: Film)
 
     @Query ("SELECT * FROM film")
-    fun allFilms(): kotlinx.coroutines.flow.Flow<List<Film>>
+    fun allFilms(): Flow<List<Film>>
 }
