@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Genre
-import com.example.dvdlibrary.model.Film
+import com.example.dvdlibrary.data.Film
 
 @Composable
 fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier) {
@@ -42,14 +42,14 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Runtime:", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-            Text(text = stringResource(film.runtime), fontWeight = FontWeight.SemiBold)
+            Text(text = film.runtime.toString(), fontWeight = FontWeight.SemiBold)
         }
         Image(
             modifier = modifier
                 .fillMaxWidth()
                 .height(600.dp)
                 .width(300.dp),
-            painter = painterResource(film.poster),
+            painter = painterResource(id = R.drawable.generic_poster),
             contentDescription = film.description,
         )
         Row(
@@ -58,7 +58,7 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Year: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-                Text(text = stringResource(film.year), fontWeight = FontWeight.SemiBold)
+                Text(text = film.year.toString(), fontWeight = FontWeight.SemiBold)
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -82,9 +82,10 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
 fun FilmScreenPreview() {
     FilmScreen(
         Film(
+            0,
             R.string.run_1,
             "Resident Evil",
-            R.drawable.poster_1,
+            R.drawable.generic_poster,
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
             "Paul W. S. Anderson",
