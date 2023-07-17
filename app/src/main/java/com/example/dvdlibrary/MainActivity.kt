@@ -29,9 +29,14 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContent {
+
             DVDLibraryTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -68,9 +73,7 @@ fun DvdApp() {
             films = films.sortedBy(Film::title),
             onAddBtnTap = { currentScreen = Add },
             onFilmTap = { film -> currentScreen = Details(film) },
-            removeFilm = {coroutineScope.launch {
-                database.filmsDao().delete(it)
-            }}
+            removeFilm = {coroutineScope.launch{database.filmsDao().delete(it)}}
         )
 
         Add -> AddScreen(onFilmEntered = {
