@@ -120,6 +120,15 @@ fun SearchTextField(
 
 @Composable
 fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, modifier: Modifier = Modifier) {
+    val show = remember { mutableStateOf(false) }
+
+    if (show.value) {
+        DeleteAlertDialog(
+            show = show.value,
+            onDismiss = { show.value = false },
+            onConfirm = { removeFilm(film) })
+    }
+
     Box(
         modifier = modifier
             .padding(horizontal = 24.dp)
@@ -127,8 +136,8 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
             .fillMaxWidth()
 //            .clickable { onFilmTap(film) }
             .combinedClickable(
-                onClick = {onFilmTap(film)},
-                onLongClick = { removeFilm(film)}
+                onClick = { onFilmTap(film) },
+                onDoubleClick = { show.value = true }
             )
     ) {
         Row() {
@@ -148,5 +157,7 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
         }
         Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
     }
-
 }
+
+
+

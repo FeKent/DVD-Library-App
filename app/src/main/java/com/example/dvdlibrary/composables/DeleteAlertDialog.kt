@@ -5,6 +5,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,17 +39,4 @@ fun DeleteAlertDialog(
 
 class MainViewModel : ViewModel(){
     private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
-
-    fun onOpenDialogClicked(){
-        _showDialog.value = true
-    }
-
-    fun onDialogConfirm(){
-        _showDialog.value = false
-    }
-
-    fun onDialogDismiss(){
-        _showDialog.value = false
-    }
 }
