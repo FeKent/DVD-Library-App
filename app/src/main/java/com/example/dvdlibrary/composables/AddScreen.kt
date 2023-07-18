@@ -33,7 +33,7 @@ import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
 
 @Composable
-fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
+fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: Modifier = Modifier) {
 
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
@@ -68,6 +68,9 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
                 )
             )
         })
+        BackButton {
+            backButton()
+        }
     }
 }
 
@@ -150,6 +153,17 @@ fun AddFilms(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+    }))
+}
+
+@Composable
+fun BackButton(onBackTap: () -> Unit) {
+    FloatingActionButton(onClick = { onBackTap() }, content = ({
+        Icon(
+            painter = painterResource(R.drawable.ic_back),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground
         )

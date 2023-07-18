@@ -73,7 +73,7 @@ fun DvdApp() {
             films = films.sortedBy(Film::title),
             onAddBtnTap = { currentScreen = Add },
             onFilmTap = { film -> currentScreen = Details(film) },
-            removeFilm = {coroutineScope.launch{database.filmsDao().delete(it)}}
+            removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
         )
 
         Add -> AddScreen(onFilmEntered = {
@@ -81,7 +81,7 @@ fun DvdApp() {
                 database.filmsDao().insertFilm(it)
                 currentScreen = Intro
             }
-        })
+        }, backButton = { currentScreen = Intro })
 
         is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
     }
