@@ -25,11 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
-import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.data.Film
+import com.example.dvdlibrary.data.Genre
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
@@ -48,10 +49,10 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, modifier: Modifier = Modifier) {
         Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.padding(32.dp))
         AddTextField(label = "Title", value = title, onValueChange = { title = it })
-        AddTextField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
-        AddTextField(label = "Year", value = year, onValueChange = { year = it })
+        AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
+        AddNumField(label = "Year", value = year, onValueChange = { year = it })
         AddTextField(label = "Director", value = director, onValueChange = { director = it })
-        AddGenreField(selectedItem = genre, onGenreSelected = {genre = it})
+        AddGenreField(selectedItem = genre, onGenreSelected = { genre = it })
         Spacer(modifier = Modifier.padding(24.dp))
         AddFilms(onSaveTap = {
             onFilmEntered(
@@ -77,12 +78,33 @@ fun AddTextField(
     onValueChange: (String) -> Unit
 ) {
 
-
     TextField(
         value = value,
         onValueChange = { onValueChange(it) },
         label = { Text(text = label) },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words)
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            capitalization = KeyboardCapitalization.Words
+        )
+    )
+}
+
+
+@Composable
+fun AddNumField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        value = value,
+        onValueChange = { onValueChange(it) },
+        label = { Text(text = label) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Number
+        )
     )
 }
 
@@ -95,11 +117,17 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
 
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-        TextField(modifier = Modifier.menuAnchor(), value = selectedItem.printName, onValueChange = {}, readOnly = true, label = {
-            Text(text = "Genre")
-        }, trailingIcon = {
-            TrailingIcon(expanded = expanded)
-        }, colors = ExposedDropdownMenuDefaults.textFieldColors()
+        TextField(modifier = Modifier.menuAnchor(),
+            value = selectedItem.printName,
+            onValueChange = {},
+            readOnly = true,
+            label = {
+                Text(text = "Genre")
+            },
+            trailingIcon = {
+                TrailingIcon(expanded = expanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
 
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -117,7 +145,7 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
 }
 
 
- @Composable
+@Composable
 fun AddFilms(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
