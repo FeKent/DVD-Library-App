@@ -1,6 +1,7 @@
 package com.example.dvdlibrary.composables
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -54,22 +55,26 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
         AddTextField(label = "Director", value = director, onValueChange = { director = it })
         AddGenreField(selectedItem = genre, onGenreSelected = { genre = it })
         Spacer(modifier = Modifier.padding(24.dp))
-        AddFilms(onSaveTap = {
-            onFilmEntered(
-                Film(
-                    id = 0,
-                    runTime.toInt(),
-                    title,
-                    R.drawable.generic_poster,
-                    "",
-                    year.toInt(),
-                    director,
-                    genre
+
+        Row() {
+            BackButton {
+                backButton()
+            }
+            Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+            AddFilms(onSaveTap = {
+                onFilmEntered(
+                    Film(
+                        id = 0,
+                        runTime.toInt(),
+                        title,
+                        R.drawable.generic_poster,
+                        "",
+                        year.toInt(),
+                        director,
+                        genre
+                    )
                 )
-            )
-        })
-        BackButton {
-            backButton()
+            })
         }
     }
 }
