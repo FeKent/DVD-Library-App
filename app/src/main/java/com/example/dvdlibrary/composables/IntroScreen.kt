@@ -126,7 +126,7 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
         DeleteAlertDialog(
             show = show.value,
             onDismiss = { show.value = false },
-            onConfirm = { removeFilm(film) })
+            onConfirm = { removeFilm(film); show.value = false })
     }
 
     Box(
