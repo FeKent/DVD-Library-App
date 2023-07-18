@@ -31,7 +31,3 @@ fun DeleteAlertDialog(
         )
     }
 }
-
-class MainViewModel : ViewModel(){
-    private val _showDialog = MutableStateFlow(false)
-}
