@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
+import java.lang.Exception
+import java.time.LocalDate
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: Modifier = Modifier) {
@@ -66,7 +68,14 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
             Spacer(modifier = Modifier.padding(horizontal = 16.dp))
             AddFilms(onSaveTap = {
 
-                if (runTime.isEmpty() || title.isEmpty() || year.isEmpty() || director.isEmpty()){
+                val yearIsValid: Boolean = try {
+                    val intYear = year.toInt()
+                    intYear > 1900 && intYear < LocalDate.now().year+1
+                } catch (e:Exception){
+                    false
+                }
+
+                if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid ){
                     Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT).show()
                     return@AddFilms
                 }
