@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +29,9 @@ import com.example.dvdlibrary.data.Genre
 @Composable
 fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -34,7 +39,8 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
             text = film.title,
             fontSize = 28.sp,
             fontWeight = FontWeight.SemiBold,
-            modifier = modifier.clickable { onReturnTap() }
+            modifier = modifier.clickable { onReturnTap() },
+            textAlign = TextAlign.Center
             )
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -83,7 +89,7 @@ fun FilmScreenPreview() {
         Film(
             0,
             R.string.run_1,
-            "Resident Evil",
+            "Night of the Day of the Dawn of the Son of the Bride of the Return of the Revenge of the Terror of the Attack of the Evil, Mutant, Alien, Flesh Eating, Hellbound, Zombified Living Dead Part 2",
             R.drawable.generic_poster,
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
