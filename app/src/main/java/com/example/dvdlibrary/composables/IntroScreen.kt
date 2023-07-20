@@ -128,7 +128,6 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
 
     if (showDeleteDialog.value) {
         DeleteAlertDialog(
-            show = showDeleteDialog.value,
             onDismiss = { showDeleteDialog.value = false },
             onConfirm = { removeFilm(film); showDeleteDialog.value = false },
             filmName = film.title,

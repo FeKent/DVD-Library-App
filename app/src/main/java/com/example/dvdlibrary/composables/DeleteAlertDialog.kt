@@ -10,25 +10,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun DeleteAlertDialog(
-    show: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     filmName: String,
 ) {
-    if (show){
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            confirmButton = {
-                TextButton(onClick = onConfirm) {
-                    Text(text = "OK")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(text = "Cancel")
-                }
-            },
-            text = { Text(text = "Delete ${filmName}?")}
-        )
-    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = "OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+        text = { Text(text = "Delete ${filmName}?") }
+    )
 }
+
