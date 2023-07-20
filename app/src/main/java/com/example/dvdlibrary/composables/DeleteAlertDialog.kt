@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import com.example.dvdlibrary.data.Film
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -12,6 +13,7 @@ fun DeleteAlertDialog(
     show: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    filmName: String,
 ) {
     if (show){
         AlertDialog(
@@ -26,8 +28,7 @@ fun DeleteAlertDialog(
                     Text(text = "Cancel")
                 }
             },
-            title = { Text(text = "Delete film?")},
-            text = { Text(text = "Press OK to delete film")}
+            text = { Text(text = "Delete ${filmName}?")}
         )
     }
 }
