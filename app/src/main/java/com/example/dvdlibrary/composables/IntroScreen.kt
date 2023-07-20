@@ -124,13 +124,13 @@ fun SearchTextField(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, modifier: Modifier = Modifier) {
-    val show = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
 
-    if (show.value) {
+    if (showDeleteDialog.value) {
         DeleteAlertDialog(
-            show = show.value,
-            onDismiss = { show.value = false },
-            onConfirm = { removeFilm(film); show.value = false })
+            show = showDeleteDialog.value,
+            onDismiss = { showDeleteDialog.value = false },
+            onConfirm = { removeFilm(film); showDeleteDialog.value = false })
     }
 
     Box(
@@ -140,7 +140,7 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onFilmTap(film) },
-                onDoubleClick = { show.value = true }
+                onDoubleClick = { showDeleteDialog.value = true }
             )
     ) {
         Row {
