@@ -46,6 +46,7 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
     var year by remember { mutableStateOf("") }
     var director by remember { mutableStateOf("") }
     var genre by remember { mutableStateOf(Genre.Action) }
+    var genre2: Genre? by remember { mutableStateOf(null) }
 
     Column(
         modifier = modifier,
@@ -58,7 +59,8 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
         AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
         AddNumField(label = "Year", value = year, onValueChange = { year = it })
         AddTextField(label = "Director", value = director, onValueChange = { director = it })
-        AddGenreField(selectedItem = genre, onGenreSelected = { genre = it })
+        AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
+        AddGenreField(label = "Optional Genre", selectedItem = genre2 , onGenreSelected = {genre2 = it})
         Spacer(modifier = Modifier.padding(24.dp))
 
         Row {
@@ -89,7 +91,8 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
                         "",
                         year.toInt(),
                         director,
-                        genre
+                        genre,
+                        genre2,
                     )
                 )
             })
@@ -136,7 +139,7 @@ fun AddNumField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
+fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -144,11 +147,11 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
         TextField(modifier = Modifier.menuAnchor(),
-            value = selectedItem.printName,
+            value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,
             label = {
-                Text(text = "Genre")
+                Text(text = label)
             },
             trailingIcon = {
                 TrailingIcon(expanded = expanded)
