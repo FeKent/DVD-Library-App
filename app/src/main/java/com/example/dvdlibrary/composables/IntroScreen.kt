@@ -33,16 +33,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
+import com.example.dvdlibrary.ui.theme.DarkPrime
 
 @Composable
 fun IntroScreen(
@@ -124,14 +129,16 @@ fun SearchTextField(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, modifier: Modifier = Modifier) {
-    val show = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
 
-    if (show.value) {
+    if (showDeleteDialog.value) {
         DeleteAlertDialog(
-            show = show.value,
-            onDismiss = { show.value = false },
-            onConfirm = { removeFilm(film); show.value = false })
+            onDismiss = { showDeleteDialog.value = false },
+            onConfirm = { removeFilm(film); showDeleteDialog.value = false },
+            filmName = film.title,
+        )
     }
+
 
     Box(
         modifier = modifier
@@ -140,7 +147,7 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onFilmTap(film) },
-                onDoubleClick = { show.value = true }
+                onDoubleClick = { showDeleteDialog.value = true }
             )
     ) {
         Row {
@@ -155,8 +162,20 @@ fun FilmRow(film: Film, onFilmTap: (Film) -> Unit, removeFilm: (Film) -> Unit, m
             Text(
                 text = film.title,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(8.dp)
+                textAlign = TextAlign.Justify,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(2f)
             )
+
+            Image(
+                painter = painterResource(film.genre2?.icon ?: R.drawable.ic_clearcolor),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(alignment = CenterVertically)
+                    .width(24.dp)
+            )
+            Spacer(modifier = modifier.padding(4.dp))
         }
         Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
     }

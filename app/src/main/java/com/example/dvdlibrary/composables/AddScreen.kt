@@ -1,5 +1,6 @@
 package com.example.dvdlibrary.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -32,15 +34,19 @@ import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
+import java.lang.Exception
+import java.time.LocalDate
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: Modifier = Modifier) {
 
+    val mContext = LocalContext.current
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
     var director by remember { mutableStateOf("") }
     var genre by remember { mutableStateOf(Genre.Action) }
+    var genre2: Genre? by remember { mutableStateOf(null) }
 
     Column(
         modifier = modifier,
@@ -53,15 +59,29 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
         AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
         AddNumField(label = "Year", value = year, onValueChange = { year = it })
         AddTextField(label = "Director", value = director, onValueChange = { director = it })
-        AddGenreField(selectedItem = genre, onGenreSelected = { genre = it })
+        AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
+        AddGenreField(label = "Optional Genre", selectedItem = genre2 , onGenreSelected = {genre2 = it})
         Spacer(modifier = Modifier.padding(24.dp))
 
-        Row() {
+        Row {
             BackButton {
                 backButton()
             }
             Spacer(modifier = Modifier.padding(horizontal = 16.dp))
             AddFilms(onSaveTap = {
+
+                val yearIsValid: Boolean = try {
+                    val intYear = year.toInt()
+                    intYear > 1900 && intYear < LocalDate.now().year+1
+                } catch (e:Exception){
+                    false
+                }
+
+                if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid ){
+                    Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT).show()
+                    return@AddFilms
+                }
+
                 onFilmEntered(
                     Film(
                         id = 0,
@@ -71,7 +91,8 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
                         "",
                         year.toInt(),
                         director,
-                        genre
+                        genre,
+                        genre2,
                     )
                 )
             })
@@ -118,7 +139,7 @@ fun AddNumField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
+fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -126,11 +147,11 @@ fun AddGenreField(selectedItem: Genre, onGenreSelected: (Genre) -> Unit) {
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
         TextField(modifier = Modifier.menuAnchor(),
-            value = selectedItem.printName,
+            value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,
             label = {
-                Text(text = "Genre")
+                Text(text = label)
             },
             trailingIcon = {
                 TrailingIcon(expanded = expanded)
