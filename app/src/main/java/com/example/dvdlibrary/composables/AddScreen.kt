@@ -87,7 +87,7 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
                         id = 0,
                         runTime.toInt(),
                         title,
-                        R.drawable.generic_poster,
+                        "R.drawable.generic_poster",
                         "",
                         year.toInt(),
                         director,

@@ -49,14 +49,14 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
             Text(text = "Runtime:", fontSize = 13.sp, fontStyle = FontStyle.Italic)
             Text(text = "${film.runtime} min", fontWeight = FontWeight.SemiBold)
         }
-        Image(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(600.dp)
-                .width(300.dp),
-            painter = painterResource(id = R.drawable.generic_poster),
-            contentDescription = film.description,
-        )
+//        Image(
+//            modifier = modifier
+//                .fillMaxWidth()
+//                .height(600.dp)
+//                .width(300.dp),
+//            painter = painterResource(id = R.drawable.generic_poster),
+//            contentDescription = film.description,
+//        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -90,7 +90,7 @@ fun FilmScreenPreview() {
             0,
             R.string.run_1,
             "Night of the Day of the Dawn of the Son of the Bride of the Return of the Revenge of the Terror of the Attack of the Evil, Mutant, Alien, Flesh Eating, Hellbound, Zombified Living Dead Part 2",
-            R.drawable.generic_poster,
+            "R.drawable.generic_poster",
             "A movie poster of two women standing back to back holding guns",
             R.string.year_1,
             "Paul W. S. Anderson",
