@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +35,15 @@ import androidx.compose.ui.unit.sp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
+import com.example.dvdlibrary.networking.TmdbApi
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.time.LocalDate
 
 @Composable
 fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: Modifier = Modifier) {
 
+    val posterScope = rememberCoroutineScope()
     val mContext = LocalContext.current
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
@@ -69,6 +73,10 @@ fun AddScreen(onFilmEntered: (Film) -> Unit, backButton: () -> Unit, modifier: M
             }
             Spacer(modifier = Modifier.padding(horizontal = 16.dp))
             AddFilms(onSaveTap = {
+
+
+                posterScope.launch { TmdbApi.service.getPosters() }
+
 
                 val yearIsValid: Boolean = try {
                     val intYear = year.toInt()

@@ -1,5 +1,6 @@
 package com.example.dvdlibrary.networking
 
+import com.example.dvdlibrary.data.Film
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
