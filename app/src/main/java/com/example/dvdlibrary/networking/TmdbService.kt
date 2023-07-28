@@ -5,6 +5,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Query
 
 //interface TmdbService{
 //    suspend fun request(){
@@ -22,6 +24,10 @@ import retrofit2.http.GET
 //}
 
 interface TmdbService {
-    @GET ("search/movie")
-    suspend fun getPosters(): TmdbMoviePosterSearchResults
+    @GET ("3/search/movie")
+    suspend fun getPosters(
+        @Header("Authorization") apiKey: String,
+        @Query("query") query: String,
+        @Query("year") year: String,
+    ): TmdbMoviePosterSearchResults
 }
