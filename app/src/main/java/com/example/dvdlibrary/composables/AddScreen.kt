@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,12 +37,9 @@ import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.networking.TmdbApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.time.LocalDate
-import java.util.logging.Logger
 
 @Composable
 fun AddScreen(
@@ -54,8 +50,9 @@ fun AddScreen(
 
     val posterScope = CoroutineScope(Dispatchers.Main)
     val mContext = LocalContext.current
-    val apiKey: String =
+    val apiKey =
         "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
+    var posterUrl by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
@@ -94,22 +91,43 @@ fun AddScreen(
                         val response = withContext(coroutineContext) {
                             TmdbApi.service.getPosters(
                                 "Bearer $apiKey",
-                                "$title",
-                                "$year"
+                                title,
+                                year
                             )
                         }
-
                         val movies = response.results
-
-                        posterScope.cancel()
-
-                        if (movies != null){
-                            if (movies.isNotEmpty()){
-                                val firstMovie = movies!![0]
-                                val posterUrl: String = firstMovie.toString()
-                                println(posterUrl)
-                            }
+                        if (movies.isNotEmpty()){
+                            val firstMovie = movies[0]
+                            posterUrl = firstMovie.poster_path.toString()
+                            println(posterUrl)
                         }
+
+                        val yearIsValid: Boolean = try {
+                            val intYear = year.toInt()
+                            intYear > 1900 && intYear < LocalDate.now().year + 1
+                        } catch (e: Exception) {
+                            false
+                        }
+
+                        if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
+                            Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+
+                        onFilmEntered(
+                            Film(
+                                id = 0,
+                                runTime.toInt(),
+                                title,
+                                poster_path = posterUrl,
+                                "",
+                                year.toInt(),
+                                director,
+                                genre,
+                                genre2,
+                            )
+                        )
 
 
                     } catch (e: Exception) {
@@ -118,33 +136,10 @@ fun AddScreen(
                     }
 
 
+
                 }
 
-                val yearIsValid: Boolean = try {
-                    val intYear = year.toInt()
-                    intYear > 1900 && intYear < LocalDate.now().year + 1
-                } catch (e: Exception) {
-                    false
-                }
 
-                if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
-                    Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT).show()
-                    return@AddFilms
-                }
-
-                onFilmEntered(
-                    Film(
-                        id = 0,
-                        runTime.toInt(),
-                        title,
-                        "posterUrl",
-                        "",
-                        year.toInt(),
-                        director,
-                        genre,
-                        genre2,
-                    )
-                )
             })
         }
     }
