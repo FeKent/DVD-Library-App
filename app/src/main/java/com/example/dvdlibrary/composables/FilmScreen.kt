@@ -95,7 +95,7 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Genre: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
             Text(
-                text = film.genre1.printName,
+                text = "${film.genre1.printName}${if (film.genre2?.printName != null) ", " else ""}${film.genre2?.printName ?: ""}",
                 fontWeight = FontWeight.SemiBold
             )
         }
