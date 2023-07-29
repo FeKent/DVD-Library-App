@@ -47,7 +47,6 @@ fun AddScreen(
     backButton: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     val posterScope = CoroutineScope(Dispatchers.Main)
     val mContext = LocalContext.current
     val apiKey =
@@ -77,16 +76,13 @@ fun AddScreen(
             selectedItem = genre2,
             onGenreSelected = { genre2 = it })
         Spacer(modifier = Modifier.padding(24.dp))
-
         Row {
             BackButton {
                 backButton()
             }
             Spacer(modifier = Modifier.padding(horizontal = 16.dp))
             AddFilms(onSaveTap = {
-
                 posterScope.launch {
-
                     try {
                         val response = withContext(coroutineContext) {
                             TmdbApi.service.getPosters(
@@ -96,25 +92,21 @@ fun AddScreen(
                             )
                         }
                         val movies = response.results
-                        if (movies.isNotEmpty()){
+                        if (movies.isNotEmpty()) {
                             val firstMovie = movies[0]
                             posterUrl = firstMovie.poster_path.toString()
-                            println(posterUrl)
                         }
-
                         val yearIsValid: Boolean = try {
                             val intYear = year.toInt()
                             intYear > 1900 && intYear < LocalDate.now().year + 1
                         } catch (e: Exception) {
                             false
                         }
-
                         if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
-                            Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT)
+                                .show()
                             return@launch
                         }
-
-
                         onFilmEntered(
                             Film(
                                 id = 0,
@@ -128,18 +120,11 @@ fun AddScreen(
                                 genre2,
                             )
                         )
-
-
                     } catch (e: Exception) {
                         println("Error occurred while making API request: ${e.localizedMessage}")
                         println("Error occurred while making API request: ${e.cause}")
                     }
-
-
-
                 }
-
-
             })
         }
     }
@@ -151,7 +136,6 @@ fun AddTextField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-
     TextField(
         value = value,
         onValueChange = { onValueChange(it) },
@@ -162,7 +146,6 @@ fun AddTextField(
         )
     )
 }
-
 
 @Composable
 fun AddNumField(
@@ -185,10 +168,7 @@ fun AddNumField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
-
-
     var expanded by remember { mutableStateOf(false) }
-
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
         TextField(
@@ -204,7 +184,6 @@ fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) 
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
-
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             Genre.values().forEach { option ->
                 DropdownMenuItem(
@@ -218,7 +197,6 @@ fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) 
         }
     }
 }
-
 
 @Composable
 fun AddFilms(onSaveTap: () -> Unit) {
