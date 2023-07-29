@@ -22,12 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
 
+
 @Composable
-fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier) {
+fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -41,7 +43,7 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
             fontWeight = FontWeight.SemiBold,
             modifier = modifier.clickable { onReturnTap() },
             textAlign = TextAlign.Center
-            )
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -49,14 +51,14 @@ fun FilmScreen(film: Film, onReturnTap: ()-> Unit, modifier: Modifier = Modifier
             Text(text = "Runtime:", fontSize = 13.sp, fontStyle = FontStyle.Italic)
             Text(text = "${film.runtime} min", fontWeight = FontWeight.SemiBold)
         }
-//        Image(
-//            modifier = modifier
-//                .fillMaxWidth()
-//                .height(600.dp)
-//                .width(300.dp),
-//            painter = painterResource(id = R.drawable.generic_poster),
-//            contentDescription = film.description,
-//        )
+        AsyncImage(
+            model = "https://image.tmdb.org/t/p/original${film.poster_path}",
+            contentDescription = film.description,
+            modifier = modifier
+                .fillMaxWidth()
+                .height(600.dp)
+                .width(300.dp)
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -99,3 +101,4 @@ fun FilmScreenPreview() {
         ), onReturnTap = {}
     )
 }
+
