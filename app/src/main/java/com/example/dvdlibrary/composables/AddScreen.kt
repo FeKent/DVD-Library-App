@@ -203,7 +203,7 @@ fun AddFilms(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
-            contentDescription = null,
+            contentDescription = "Save Button",
             tint = MaterialTheme.colorScheme.onBackground
         )
     }))
@@ -214,7 +214,7 @@ fun BackButton(onBackTap: () -> Unit) {
     FloatingActionButton(onClick = { onBackTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_back),
-            contentDescription = null,
+            contentDescription = "Back Button",
             tint = MaterialTheme.colorScheme.onBackground
         )
     }))
