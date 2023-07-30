@@ -1,5 +1,6 @@
 package com.example.dvdlibrary.composables
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,7 +52,7 @@ fun AddScreen(
     val mContext = LocalContext.current
     val apiKey =
         "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
-    var posterUrl by remember { mutableStateOf("") }
+
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
@@ -92,9 +93,16 @@ fun AddScreen(
                             )
                         }
                         val movies = response.results
-                        if (movies.isNotEmpty()) {
+                        val posterUrl = if (movies.isNotEmpty()) {
                             val firstMovie = movies[0]
-                            posterUrl = firstMovie.poster_path.toString()
+                            Log.d("poster path", firstMovie.poster_path.toString())
+                            if (firstMovie.poster_path != null) {
+                                firstMovie.poster_path.toString()
+                            } else {
+                                ""
+                            }
+                        } else {
+                            ""
                         }
                         val yearIsValid: Boolean = try {
                             val intYear = year.toInt()
