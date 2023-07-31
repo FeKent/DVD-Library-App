@@ -2,15 +2,11 @@ package com.example.dvdlibrary
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.compose.material3.AlertDialog
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +21,6 @@ import com.example.dvdlibrary.Screen.Add
 import com.example.dvdlibrary.Screen.Details
 import com.example.dvdlibrary.Screen.Intro
 import com.example.dvdlibrary.composables.AddScreen
-import com.example.dvdlibrary.composables.DeleteAlertDialog
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
@@ -83,8 +78,8 @@ fun DvdApp() {
         )
 
         Add -> AddScreen(onFilmEntered = { newFilm ->
-            val isDuplicate = existingFilm(films, newFilm)
-            if (!isDuplicate) {
+            val isFilmDuplicate = existingFilm(films, newFilm)
+            if (!isFilmDuplicate) {
                 coroutineScope.launch {
                     database.filmsDao().insertFilm(newFilm)
                     currentScreen = Intro
