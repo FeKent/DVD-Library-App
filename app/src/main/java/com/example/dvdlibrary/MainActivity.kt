@@ -1,11 +1,16 @@
 package com.example.dvdlibrary
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.compose.material3.AlertDialog
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +25,7 @@ import com.example.dvdlibrary.Screen.Add
 import com.example.dvdlibrary.Screen.Details
 import com.example.dvdlibrary.Screen.Intro
 import com.example.dvdlibrary.composables.AddScreen
+import com.example.dvdlibrary.composables.DeleteAlertDialog
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
@@ -53,7 +59,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DvdApp() {
     var currentScreen by remember { mutableStateOf<Screen>(Intro) }
-
     val appContext = LocalContext.current.applicationContext
     val database by remember {
         mutableStateOf(
@@ -66,6 +71,7 @@ fun DvdApp() {
     }
     val coroutineScope = rememberCoroutineScope()
     val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
+    val mContext = LocalContext.current
 
 
     when (val cs = currentScreen) {
@@ -76,14 +82,27 @@ fun DvdApp() {
             removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
         )
 
-        Add -> AddScreen(onFilmEntered = {
-            coroutineScope.launch {
-                database.filmsDao().insertFilm(it)
-                currentScreen = Intro
+        Add -> AddScreen(onFilmEntered = { newFilm ->
+            val isDuplicate = existingFilm(films, newFilm)
+            if (!isDuplicate) {
+                coroutineScope.launch {
+                    database.filmsDao().insertFilm(newFilm)
+                    currentScreen = Intro
+                }
+            } else {
+                Toast.makeText(mContext, "You have already added this film", Toast.LENGTH_SHORT)
+                    .show()
             }
-        }, backButton = { currentScreen = Intro })
+        }, backButton = { currentScreen = Intro }
+        )
 
         is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
+    }
+}
+
+fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
+    return filmList.any { existingFilm ->
+        existingFilm.title == newFilm.title && existingFilm.year == newFilm.year
     }
 }
 
