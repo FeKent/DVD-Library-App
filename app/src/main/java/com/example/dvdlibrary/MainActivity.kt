@@ -1,6 +1,7 @@
 package com.example.dvdlibrary
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +54,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DvdApp() {
     var currentScreen by remember { mutableStateOf<Screen>(Intro) }
-
     val appContext = LocalContext.current.applicationContext
     val database by remember {
         mutableStateOf(
@@ -66,6 +66,7 @@ fun DvdApp() {
     }
     val coroutineScope = rememberCoroutineScope()
     val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
+    val mContext = LocalContext.current
 
 
     when (val cs = currentScreen) {
@@ -76,14 +77,27 @@ fun DvdApp() {
             removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
         )
 
-        Add -> AddScreen(onFilmEntered = {
-            coroutineScope.launch {
-                database.filmsDao().insertFilm(it)
-                currentScreen = Intro
+        Add -> AddScreen(onFilmEntered = { newFilm ->
+            val isFilmDuplicate = existingFilm(films, newFilm)
+            if (!isFilmDuplicate) {
+                coroutineScope.launch {
+                    database.filmsDao().insertFilm(newFilm)
+                    currentScreen = Intro
+                }
+            } else {
+                Toast.makeText(mContext, "You have already added this film", Toast.LENGTH_SHORT)
+                    .show()
             }
-        }, backButton = { currentScreen = Intro })
+        }, backButton = { currentScreen = Intro }
+        )
 
         is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
+    }
+}
+
+fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
+    return filmList.any { existingFilm ->
+        existingFilm.title == newFilm.title && existingFilm.year == newFilm.year
     }
 }
 
