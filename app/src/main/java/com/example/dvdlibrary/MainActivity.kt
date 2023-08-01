@@ -66,7 +66,7 @@ fun DvdApp() {
     }
     val coroutineScope = rememberCoroutineScope()
     val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
-    val mContext = LocalContext.current
+    val showDialogState = remember { mutableStateOf(false) }
 
 
     when (val cs = currentScreen) {
@@ -78,6 +78,7 @@ fun DvdApp() {
         )
 
         Add -> AddScreen(onFilmEntered = { newFilm ->
+
             val isFilmDuplicate = existingFilm(films, newFilm)
             if (!isFilmDuplicate) {
                 coroutineScope.launch {
@@ -85,10 +86,9 @@ fun DvdApp() {
                     currentScreen = Intro
                 }
             } else {
-                Toast.makeText(mContext, "You have already added this film", Toast.LENGTH_SHORT)
-                    .show()
+                showDialogState.value = true
             }
-        }, backButton = { currentScreen = Intro }
+        }, backButton = { currentScreen = Intro }, showDialogState = showDialogState
         )
 
         is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })

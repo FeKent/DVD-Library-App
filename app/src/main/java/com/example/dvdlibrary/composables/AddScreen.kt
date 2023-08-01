@@ -1,12 +1,12 @@
 package com.example.dvdlibrary.composables
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,15 +16,16 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -46,10 +47,13 @@ import java.time.LocalDate
 fun AddScreen(
     onFilmEntered: (Film) -> Unit,
     backButton: () -> Unit,
+    showDialogState: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
+    val showValidLogState = remember { mutableStateOf(false) }
+    val validationLabel = remember { mutableStateOf("") }
+
     val posterScope = CoroutineScope(Dispatchers.Main)
-    val mContext = LocalContext.current
     val apiKey =
         "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
 
@@ -110,9 +114,19 @@ fun AddScreen(
                         } catch (e: Exception) {
                             false
                         }
+
+                        if (runTime.isEmpty()) {
+                            validationLabel.value = "Runtime"
+                        } else if (title.isEmpty()) {
+                            validationLabel.value = "Title"
+                        } else if (director.isEmpty()) {
+                            validationLabel.value = "Director"
+                        } else if (!yearIsValid) {
+                            validationLabel.value = "Year"
+                        }
+
                         if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
-                            Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT)
-                                .show()
+                            showValidLogState.value = true
                             return@launch
                         }
                         onFilmEntered(
@@ -135,8 +149,26 @@ fun AddScreen(
                 }
             })
         }
+
+        if (showValidLogState.value) {
+            ValidationDialog(
+                label = validationLabel.value,
+                onDismiss = {showValidLogState.value = false}
+            )
+        }
+
+        if (showDialogState.value) {
+            AlertDialog(
+                onDismissRequest = { showDialogState.value = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialogState.value = false }) { Text(text = "OK") }
+                },
+                text = { Text(text = "This film already exists") },
+            )
+        }
     }
 }
+
 
 @Composable
 fun AddTextField(
