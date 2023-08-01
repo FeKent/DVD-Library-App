@@ -1,5 +1,6 @@
 package com.example.dvdlibrary.composables
 
+import android.icu.text.CaseMap.Title
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,8 +19,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +51,7 @@ import java.time.LocalDate
 fun AddScreen(
     onFilmEntered: (Film) -> Unit,
     backButton: () -> Unit,
+    showDialogState: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
     val posterScope = CoroutineScope(Dispatchers.Main)
@@ -135,8 +141,18 @@ fun AddScreen(
                 }
             })
         }
+        if (showDialogState.value) {
+            AlertDialog(
+                onDismissRequest = { showDialogState.value = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialogState.value = false }) { Text(text = "Ok") }
+                },
+                text = { Text(text = "This film already exists", color = MaterialTheme.colorScheme.onSurface) },
+            )
+        }
     }
 }
+
 
 @Composable
 fun AddTextField(
