@@ -54,6 +54,9 @@ fun AddScreen(
     showDialogState: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
+    val showValidLogState = remember { mutableStateOf(false) }
+    val validationLabel = remember { mutableStateOf("") }
+
     val posterScope = CoroutineScope(Dispatchers.Main)
     val mContext = LocalContext.current
     val apiKey =
@@ -116,9 +119,19 @@ fun AddScreen(
                         } catch (e: Exception) {
                             false
                         }
+
+                        if (runTime.isEmpty()) {
+                            validationLabel.value = "Runtime"
+                        } else if (title.isEmpty()) {
+                            validationLabel.value = "Title"
+                        } else if (director.isEmpty()) {
+                            validationLabel.value = "Director"
+                        } else if (!yearIsValid) {
+                            validationLabel.value = "Year"
+                        }
+
                         if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
-                            Toast.makeText(mContext, "Not All Fields Used", Toast.LENGTH_SHORT)
-                                .show()
+                            showValidLogState.value = true
                             return@launch
                         }
                         onFilmEntered(
@@ -141,13 +154,21 @@ fun AddScreen(
                 }
             })
         }
+
+        if (showValidLogState.value) {
+            ValidationDialog(
+                label = validationLabel.value,
+                onDismiss = {showValidLogState.value = false}
+            )
+        }
+
         if (showDialogState.value) {
             AlertDialog(
                 onDismissRequest = { showDialogState.value = false },
                 confirmButton = {
-                    TextButton(onClick = { showDialogState.value = false }) { Text(text = "Ok") }
+                    TextButton(onClick = { showDialogState.value = false }) { Text(text = "OK") }
                 },
-                text = { Text(text = "This film already exists", color = MaterialTheme.colorScheme.onSurface) },
+                text = { Text(text = "This film already exists") },
             )
         }
     }
