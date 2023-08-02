@@ -101,10 +101,23 @@ class MainActivity : ComponentActivity() {
 //}
 //
 //
+//sealed class Screen {
+//    object Intro : Screen
+//    object Add : Screen
+//    class Details(val film: Film) : Screen
+//}
+
+
+
+
+
+
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
     object Details : Screen("details")
+    // this used to be class Details(val film: Film) : Screen ("details") but changed it to see if it would fix the navigation not working
+    // it DID fix it but obviously can't use it as I need to like this
 }
 
 
