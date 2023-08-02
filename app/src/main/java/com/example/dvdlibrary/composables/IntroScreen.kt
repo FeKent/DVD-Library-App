@@ -59,40 +59,42 @@ fun IntroScreen(
 ) {
     var searchItem by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        SearchTextField(
-            searchTerm = searchItem,
-            onSearchTermChange = {
-                searchItem = it
-            },
-            onClearTap = { searchItem = ""},
-            modifier = Modifier.padding(top = 16.dp),
-        )
-        Spacer(modifier = Modifier.height(24.dp))
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            films
-                .filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
-                .forEach {
-                    FilmRow(film = it, onFilmTap = onFilmTap, removeFilm = removeFilm)
-                }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
-            Icon(
-                painter = painterResource(R.drawable.ic_add),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground
+            SearchTextField(
+                searchTerm = searchItem,
+                onSearchTermChange = {
+                    searchItem = it
+                },
+                onClearTap = { searchItem = ""},
+                modifier = Modifier.padding(top = 16.dp),
             )
-        }))
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                films
+                    .filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+                    .forEach {
+                        FilmRow(film = it, onFilmTap = onFilmTap, removeFilm = removeFilm)
+                    }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
+                Icon(
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }))
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
