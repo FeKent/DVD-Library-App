@@ -1,12 +1,9 @@
 package com.example.dvdlibrary
 
 import android.os.Bundle
-import android.telecom.Call.Details
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -22,9 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.dvdlibrary.Screen.Add
-import com.example.dvdlibrary.Screen.Details
-import com.example.dvdlibrary.Screen.Intro
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
@@ -107,18 +101,18 @@ class MainActivity : ComponentActivity() {
 //}
 //
 //
-//sealed class Screen {
-//    object Intro : Screen()
-//    object Add : Screen()
-//    class Details(val film: Film) : Screen()
-//}
+sealed class Screen(val route: String) {
+    object Intro : Screen("intro")
+    object Add : Screen("add")
+    class Details(val film: Film) : Screen("details")
+}
 
 
 @Composable
 fun DvdApp() {
 
-    var currentScreen by remember { mutableStateOf("intro") }
-    val appContext = LocalContext.current.applicationContext
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Intro) }
+    val appContext = LocalContext.current
     val database by remember {
         mutableStateOf(
             Room.databaseBuilder(
@@ -133,33 +127,35 @@ fun DvdApp() {
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "intro") {
+    NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable("intro") {
             IntroScreen(
                 films = films.sortedBy(Film::title),
-                onAddBtnTap = { currentScreen = "add" },
-                onFilmTap = { film -> currentScreen = Details(film) },
+                onAddBtnTap = { currentScreen = Screen.Add },
+                onFilmTap = { film -> currentScreen = Screen.Details(film) },
                 removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
             )
         }
-        composable("add") {
+        composable(Screen.Add.route) {
             AddScreen(onFilmEntered = { newFilm ->
 
                 val isFilmDuplicate = existingFilm(films, newFilm)
                 if (!isFilmDuplicate) {
                     coroutineScope.launch {
                         database.filmsDao().insertFilm(newFilm)
-                        currentScreen = "intro"
+                        navController.navigate("intro")
                     }
                 } else {
                     showDialogState.value = true
                 }
-            }, backButton = { currentScreen = "intro" }, showDialogState = showDialogState
+            },
+                backButton = { navController.navigate("intro") },
+                showDialogState = showDialogState
             )
         }
-        composable("Details") {
-            FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
-
+        composable("details") {
+            val film = (currentScreen as? Screen.Details)?.film
+            film?.let { FilmScreen(it, onReturnTap = { navController.popBackStack() }) }
         }
     }
 }
