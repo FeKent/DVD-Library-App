@@ -162,7 +162,7 @@ fun DvdApp() {
                         showDialogState.value = true
                     }
                 },
-                backButton = { navController.popBackStack() },
+                navigateBack = { navController.popBackStack() },
                 showDialogState = showDialogState
             )
         }

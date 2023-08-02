@@ -1,9 +1,12 @@
 package com.example.dvdlibrary.composables
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -46,7 +49,7 @@ import java.time.LocalDate
 @Composable
 fun AddScreen(
     onFilmEntered: (Film) -> Unit,
-    backButton: () -> Unit,
+    navigateBack: () -> Unit,
     showDialogState: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
@@ -64,107 +67,109 @@ fun AddScreen(
     var genre by remember { mutableStateOf(Genre.Action) }
     var genre2: Genre? by remember { mutableStateOf(null) }
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.padding(8.dp))
-        Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.padding(32.dp))
-        AddTextField(label = "Title", value = title, onValueChange = { title = it })
-        AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
-        AddNumField(label = "Year", value = year, onValueChange = { year = it })
-        AddTextField(label = "Director", value = director, onValueChange = { director = it })
-        AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
-        AddGenreField(
-            label = "Optional Genre",
-            selectedItem = genre2,
-            onGenreSelected = { genre2 = it })
-        Spacer(modifier = Modifier.padding(24.dp))
-        Row {
-            BackButton {
-                backButton()
-            }
-            Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-            AddFilms(onSaveTap = {
-                posterScope.launch {
-                    try {
-                        val response = withContext(coroutineContext) {
-                            TmdbApi.service.getPosters(
-                                "Bearer $apiKey",
-                                title,
-                                year
-                            )
-                        }
-                        val movies = response.results
-                        val posterUrl = if (movies.isNotEmpty()) {
-                            val firstMovie = movies[0]
-                            Log.d("poster path", firstMovie.poster_path.toString())
-                            if (firstMovie.poster_path != null) {
-                                firstMovie.poster_path.toString()
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.padding(32.dp))
+            AddTextField(label = "Title", value = title, onValueChange = { title = it })
+            AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
+            AddNumField(label = "Year", value = year, onValueChange = { year = it })
+            AddTextField(label = "Director", value = director, onValueChange = { director = it })
+            AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
+            AddGenreField(
+                label = "Optional Genre",
+                selectedItem = genre2,
+                onGenreSelected = { genre2 = it })
+            Spacer(modifier = Modifier.padding(24.dp))
+            Row {
+                BackButton {
+                    navigateBack()
+                }
+                Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+                AddFilms(onSaveTap = {
+                    posterScope.launch {
+                        try {
+                            val response = withContext(coroutineContext) {
+                                TmdbApi.service.getPosters(
+                                    "Bearer $apiKey",
+                                    title,
+                                    year
+                                )
+                            }
+                            val movies = response.results
+                            val posterUrl = if (movies.isNotEmpty()) {
+                                val firstMovie = movies[0]
+                                Log.d("poster path", firstMovie.poster_path.toString())
+                                if (firstMovie.poster_path != null) {
+                                    firstMovie.poster_path.toString()
+                                } else {
+                                    ""
+                                }
                             } else {
                                 ""
                             }
-                        } else {
-                            ""
-                        }
-                        val yearIsValid: Boolean = try {
-                            val intYear = year.toInt()
-                            intYear > 1900 && intYear < LocalDate.now().year + 1
-                        } catch (e: Exception) {
-                            false
-                        }
+                            val yearIsValid: Boolean = try {
+                                val intYear = year.toInt()
+                                intYear > 1900 && intYear < LocalDate.now().year + 1
+                            } catch (e: Exception) {
+                                false
+                            }
 
-                        if (runTime.isEmpty()) {
-                            validationLabel.value = "Runtime"
-                        } else if (title.isEmpty()) {
-                            validationLabel.value = "Title"
-                        } else if (director.isEmpty()) {
-                            validationLabel.value = "Director"
-                        } else if (!yearIsValid) {
-                            validationLabel.value = "Year"
-                        }
+                            if (runTime.isEmpty()) {
+                                validationLabel.value = "Runtime"
+                            } else if (title.isEmpty()) {
+                                validationLabel.value = "Title"
+                            } else if (director.isEmpty()) {
+                                validationLabel.value = "Director"
+                            } else if (!yearIsValid) {
+                                validationLabel.value = "Year"
+                            }
 
-                        if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
-                            showValidLogState.value = true
-                            return@launch
-                        }
-                        onFilmEntered(
-                            Film(
-                                id = 0,
-                                runTime.toInt(),
-                                title,
-                                poster_path = posterUrl,
-                                "",
-                                year.toInt(),
-                                director,
-                                genre,
-                                genre2,
+                            if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
+                                showValidLogState.value = true
+                                return@launch
+                            }
+                            onFilmEntered(
+                                Film(
+                                    id = 0,
+                                    runTime.toInt(),
+                                    title,
+                                    poster_path = posterUrl,
+                                    "",
+                                    year.toInt(),
+                                    director,
+                                    genre,
+                                    genre2,
+                                )
                             )
-                        )
-                    } catch (e: Exception) {
-                        println("Error occurred while making API request: ${e.localizedMessage}")
-                        println("Error occurred while making API request: ${e.cause}")
+                        } catch (e: Exception) {
+                            println("Error occurred while making API request: ${e.localizedMessage}")
+                            println("Error occurred while making API request: ${e.cause}")
+                        }
                     }
-                }
-            })
-        }
+                })
+            }
 
-        if (showValidLogState.value) {
-            ValidationDialog(
-                label = validationLabel.value,
-                onDismiss = {showValidLogState.value = false}
-            )
-        }
+            if (showValidLogState.value) {
+                ValidationDialog(
+                    label = validationLabel.value,
+                    onDismiss = {showValidLogState.value = false}
+                )
+            }
 
-        if (showDialogState.value) {
-            AlertDialog(
-                onDismissRequest = { showDialogState.value = false },
-                confirmButton = {
-                    TextButton(onClick = { showDialogState.value = false }) { Text(text = "OK") }
-                },
-                text = { Text(text = "This film already exists") },
-            )
+            if (showDialogState.value) {
+                AlertDialog(
+                    onDismissRequest = { showDialogState.value = false },
+                    confirmButton = {
+                        TextButton(onClick = { showDialogState.value = false }) { Text(text = "OK") }
+                    },
+                    text = { Text(text = "This film already exists") },
+                )
+            }
         }
     }
 }
