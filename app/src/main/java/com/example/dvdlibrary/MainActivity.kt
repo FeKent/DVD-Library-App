@@ -104,14 +104,14 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
-    class Details(val film: Film) : Screen("details")
+    object Details : Screen("details")
 }
 
 
 @Composable
 fun DvdApp() {
 
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Intro) }
+
     val appContext = LocalContext.current
     val database by remember {
         mutableStateOf(
@@ -128,38 +128,37 @@ fun DvdApp() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
-        composable("intro") {
+        composable(Screen.Intro.route) {
             IntroScreen(
                 films = films.sortedBy(Film::title),
-                onAddBtnTap = { currentScreen = Screen.Add },
-                onFilmTap = { film -> currentScreen = Screen.Details(film) },
-                removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
+                onAddBtnTap = { navController.navigate(Screen.Add.route) },
+                onFilmTap = { navController.navigate(Screen.Details.route) },
+                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } }
             )
         }
         composable(Screen.Add.route) {
-            AddScreen(onFilmEntered = { newFilm ->
-
-                val isFilmDuplicate = existingFilm(films, newFilm)
-                if (!isFilmDuplicate) {
-                    coroutineScope.launch {
-                        database.filmsDao().insertFilm(newFilm)
-                        navController.navigate("intro")
+            AddScreen(
+                onFilmEntered = { newFilm ->
+                    val isFilmDuplicate = existingFilm(films, newFilm)
+                    if (!isFilmDuplicate) {
+                        coroutineScope.launch {
+                            database.filmsDao().insertFilm(newFilm)
+                            navController.popBackStack()
+                        }
+                    } else {
+                        showDialogState.value = true
                     }
-                } else {
-                    showDialogState.value = true
-                }
-            },
-                backButton = { navController.navigate("intro") },
+                },
+                backButton = { navController.popBackStack() },
                 showDialogState = showDialogState
             )
         }
-        composable("details") {
-            val film = (currentScreen as? Screen.Details)?.film
+        composable(Screen.Details.route) { backStackEntry ->
+            val film = backStackEntry.arguments?.getParcelable<Film>("film")
             film?.let { FilmScreen(it, onReturnTap = { navController.popBackStack() }) }
         }
     }
 }
-
 
 fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
     return filmList.any { existingFilm ->
