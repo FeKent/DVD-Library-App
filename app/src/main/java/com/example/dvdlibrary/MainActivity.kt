@@ -15,16 +15,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.room.Room
+import com.example.dvdlibrary.Screen.Details
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
+import com.google.gson.Gson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.launch
 
 
@@ -108,16 +115,14 @@ class MainActivity : ComponentActivity() {
 //}
 
 
-
-
-
-
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
-    object Details : Screen("details")
-    // this used to be class Details(val film: Film) : Screen ("details") but changed it to see if it would fix the navigation not working
-    // it DID fix it but obviously can't use it as I need to like this
+    class Details(val film: Film) : Screen(route) {
+        companion object {
+            const val route: String = "details"
+        }
+    }
 }
 
 
@@ -145,7 +150,7 @@ fun DvdApp() {
             IntroScreen(
                 films = films.sortedBy(Film::title),
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
-                onFilmTap = { navController.navigate(Screen.Details.route) },
+                onFilmTap = { film -> navController.navigate("details/${film}") },
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } }
             )
         }
@@ -166,12 +171,17 @@ fun DvdApp() {
                 showDialogState = showDialogState
             )
         }
-        composable(Screen.Details.route) { backStackEntry ->
+        composable(Details.route) { backStackEntry ->
             val film = backStackEntry.arguments?.getParcelable<Film>("film")
-            film?.let { FilmScreen(it, onReturnTap = { navController.popBackStack() }) }
+            if (film != null) {
+                FilmScreen(
+                    film = film,
+                    onReturnTap = { navController.popBackStack() })
+            }
         }
     }
 }
+
 
 fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
     return filmList.any { existingFilm ->
