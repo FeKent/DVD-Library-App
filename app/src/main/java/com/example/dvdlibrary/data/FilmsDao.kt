@@ -17,4 +17,7 @@ interface FilmsDao {
 
     @Query ("SELECT * FROM film")
     fun allFilms(): Flow<List<Film>>
+
+    @Query ("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
+    suspend fun getFilm(filmId: Int): Film
 }
