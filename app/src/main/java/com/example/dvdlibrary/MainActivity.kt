@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.setValue
 
 
 class MainActivity : ComponentActivity() {
@@ -168,11 +170,15 @@ fun DvdApp() {
         ) { backStackEntry ->
             val filmId = backStackEntry.arguments?.getInt("filmId")
             if (filmId != null) {
-                var film: Film? = null
+                var film: Film? by remember { mutableStateOf(null) }
 
-                if (film != null) {
+                LaunchedEffect(key1 = Unit){
+                    film = database.filmsDao().getFilm(filmId)
+                }
+
+                film?.let{
                     FilmScreen(
-                        film = film,
+                        film = it,
                         onReturnTap = { navController.popBackStack() })
                 }
             }
