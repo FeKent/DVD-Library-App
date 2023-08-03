@@ -3,6 +3,8 @@ package com.example.dvdlibrary
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +31,8 @@ import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -173,6 +177,8 @@ fun DvdApp() {
                 var film: Film? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(key1 = Unit){
+                    delay(2000)
+                    // remove delay after loading indicator is added
                     film = database.filmsDao().getFilm(filmId)
                 }
 
@@ -180,6 +186,10 @@ fun DvdApp() {
                     FilmScreen(
                         film = it,
                         onReturnTap = { navController.popBackStack() })
+                } ?: run{
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Yellow)) {
+                        // loading indicator
+                    }
                 }
             }
         }
