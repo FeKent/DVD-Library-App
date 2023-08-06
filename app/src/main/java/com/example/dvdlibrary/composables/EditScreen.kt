@@ -56,8 +56,8 @@ fun EditScreen(
             AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
             AddNumField(label = "Year", value = year, onValueChange = { year = it })
             AddTextField(label = "Director", value = director, onValueChange = { director = it })
-            AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
-            AddGenreField(
+            AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
+            AddGenre2Field(
                 label = "Optional Genre",
                 selectedItem = genre2,
                 onGenreSelected = { genre2 = it })

@@ -79,8 +79,8 @@ fun AddScreen(
             AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
             AddNumField(label = "Year", value = year, onValueChange = { year = it })
             AddTextField(label = "Director", value = director, onValueChange = { director = it })
-            AddGenreField(label = "Genre", selectedItem = genre, onGenreSelected = { genre = it })
-            AddGenreField(
+            AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
+            AddGenre2Field(
                 label = "Optional Genre",
                 selectedItem = genre2,
                 onGenreSelected = { genre2 = it })
@@ -212,7 +212,7 @@ fun AddNumField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
+fun AddGenre1Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
@@ -242,6 +242,56 @@ fun AddGenreField(label: String, selectedItem: Genre?, onGenreSelected: (Genre) 
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddGenre2Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre?) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+        TextField(
+            modifier = Modifier.menuAnchor(),
+            value = selectedItem?.printName ?: "No Genre Selected",
+            onValueChange = {},
+            readOnly = true,
+            label = {
+                Text(text = label)
+            },
+            trailingIcon = {
+                TrailingIcon(expanded = expanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                { Text(text = "No Genre Selected") },
+                onClick = {
+                    onGenreSelected(null)
+                    expanded = false
+                }
+            )
+            Genre.values().forEach { option ->
+                DropdownMenuItem(
+                    { Text(text = option.printName) },
+                    onClick = {
+                        onGenreSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun AddFilms(onSaveTap: () -> Unit) {
