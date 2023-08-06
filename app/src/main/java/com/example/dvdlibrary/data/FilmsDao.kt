@@ -21,7 +21,4 @@ interface FilmsDao {
 
     @Query ("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
     suspend fun getFilm(filmId: Int): Film
-
-    @Update
-    suspend fun updateFilm(film: Film, filmId: Int)
 }

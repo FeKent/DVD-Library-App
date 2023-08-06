@@ -32,6 +32,7 @@ import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
 
@@ -118,6 +119,8 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
+
+    object Edit : Screen("edit")
     object Details : Screen("details/{filmId}")
 
 }
@@ -149,52 +152,61 @@ fun DvdApp() {
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
-                editFilm = {}
+                editFilm = { navController.navigate(Screen.Edit.route) }
             )
         }
-        composable(Screen.Add.route) {
-            AddScreen(
-                onFilmEntered = { newFilm ->
-                    val isFilmDuplicate = existingFilm(films, newFilm)
-                    if (!isFilmDuplicate) {
-                        coroutineScope.launch {
-                            database.filmsDao().insertFilm(newFilm)
-                            navController.popBackStack()
-                        }
-                    } else {
-                        showDialogState.value = true
-                    }
-                },
-                navigateBack = { navController.popBackStack() },
-                showDialogState = showDialogState
-            )
-        }
-        composable(
-            Screen.Details.route,
-            arguments = listOf(navArgument("filmId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val filmId = backStackEntry.arguments?.getInt("filmId")
-            if (filmId != null) {
-                var film: Film? by remember { mutableStateOf(null) }
 
-                LaunchedEffect(key1 = Unit){
-                    delay(2000)
-                    // remove delay after loading indicator is added
-                    film = database.filmsDao().getFilm(filmId)
+    composable(Screen.Add.route) {
+        AddScreen(
+            onFilmEntered = { newFilm ->
+                val isFilmDuplicate = existingFilm(films, newFilm)
+                if (!isFilmDuplicate) {
+                    coroutineScope.launch {
+                        database.filmsDao().insertFilm(newFilm)
+                        navController.popBackStack()
+                    }
+                } else {
+                    showDialogState.value = true
                 }
+            },
+            navigateBack = { navController.popBackStack() },
+            showDialogState = showDialogState
+        )
+    }
+    composable(Screen.Edit.route){
 
-                film?.let{
-                    FilmScreen(
-                        film = it,
-                        onReturnTap = { navController.popBackStack() })
-                } ?: run{
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Yellow)) {
-                        // loading indicator
-                    }
+    }
+
+    composable(
+        Screen.Details.route,
+        arguments = listOf(navArgument("filmId") { type = NavType.IntType })
+    ) { backStackEntry ->
+        val filmId = backStackEntry.arguments?.getInt("filmId")
+        if (filmId != null) {
+            var film: Film? by remember { mutableStateOf(null) }
+
+            LaunchedEffect(key1 = Unit) {
+                delay(2000)
+                // remove delay after loading indicator is added
+                film = database.filmsDao().getFilm(filmId)
+            }
+
+            film?.let {
+                FilmScreen(
+                    film = it,
+                    onReturnTap = { navController.popBackStack() })
+            } ?: run {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Yellow)
+                ) {
+                    // loading indicator
                 }
             }
         }
     }
+}
 }
 
 
