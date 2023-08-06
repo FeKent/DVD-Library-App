@@ -185,7 +185,7 @@ fun DvdApp() {
                 }
 
                 film?.let {
-                    EditScreen(filmName = it.title)
+                    EditScreen(filmName = it.title, editDetails = it)
                 }
 
             }

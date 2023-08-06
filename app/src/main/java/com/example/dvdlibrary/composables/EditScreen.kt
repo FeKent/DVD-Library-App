@@ -16,19 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
 
 @Composable
 fun EditScreen(
     filmName: String,
+    editDetails: Film,
     modifier: Modifier = Modifier
 ) {
-    var title by remember { mutableStateOf("") }
-    var runTime by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
-    var director by remember { mutableStateOf("") }
-    var genre by remember { mutableStateOf(Genre.Action) }
-    var genre2: Genre? by remember { mutableStateOf(null) }
+    var title by remember { mutableStateOf("${editDetails.title}") }
+    var runTime by remember { mutableStateOf("${editDetails.runtime}") }
+    var year by remember { mutableStateOf("${editDetails.year}") }
+    var director by remember { mutableStateOf("${editDetails.director}") }
+    var genre by remember { mutableStateOf(editDetails.genre1) }
+    var genre2: Genre? by remember { mutableStateOf(editDetails.genre2) }
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
