@@ -53,7 +53,7 @@ fun AddScreen(
     onFilmEntered: (Film) -> Unit,
     navigateBack: () -> Unit,
     showDialogState: MutableState<Boolean>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val showValidLogState = remember { mutableStateOf(false) }
     val validationLabel = remember { mutableStateOf("") }
@@ -69,23 +69,51 @@ fun AddScreen(
     var genre by remember { mutableStateOf(Genre.Action) }
     var genre2: Genre? by remember { mutableStateOf(null) }
 
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = modifier,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 56.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(8.dp))
             Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.padding(32.dp))
-            AddTextField(label = "Title", value = title, onValueChange = { title = it })
-            AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
-            AddNumField(label = "Year", value = year, onValueChange = { year = it })
-            AddTextField(label = "Starring", value = starring, onValueChange = { starring = it })
-            AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
+            AddTextField(
+                label = "Title",
+                value = title,
+                onValueChange = { title = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddNumField(
+                label = "Runtime",
+                value = runTime,
+                onValueChange = { runTime = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddNumField(
+                label = "Year",
+                value = year,
+                onValueChange = { year = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddTextField(
+                label = "Starring",
+                value = starring,
+                onValueChange = { starring = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddGenre1Field(
+                label = "Genre",
+                selectedItem = genre,
+                onGenreSelected = { genre = it },
+                modifier = Modifier.fillMaxWidth()
+            )
             AddGenre2Field(
                 label = "Optional Genre",
                 selectedItem = genre2,
-                onGenreSelected = { genre2 = it })
+                onGenreSelected = { genre2 = it }, modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.padding(24.dp))
             Row {
                 BackButton {
@@ -159,7 +187,7 @@ fun AddScreen(
             if (showValidLogState.value) {
                 ValidationDialog(
                     label = validationLabel.value,
-                    onDismiss = {showValidLogState.value = false}
+                    onDismiss = { showValidLogState.value = false }
                 )
             }
 
@@ -167,7 +195,9 @@ fun AddScreen(
                 AlertDialog(
                     onDismissRequest = { showDialogState.value = false },
                     confirmButton = {
-                        TextButton(onClick = { showDialogState.value = false }) { Text(text = "OK") }
+                        TextButton(onClick = {
+                            showDialogState.value = false
+                        }) { Text(text = "OK") }
                     },
                     text = { Text(text = "This film already exists") },
                 )
@@ -181,7 +211,8 @@ fun AddScreen(
 fun AddTextField(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TextField(
         value = value,
@@ -192,7 +223,7 @@ fun AddTextField(
             imeAction = ImeAction.Next,
             capitalization = KeyboardCapitalization.Words
         ),
-        modifier = Modifier.horizontalScroll(rememberScrollState())
+        modifier = modifier
     )
 }
 
@@ -200,7 +231,8 @@ fun AddTextField(
 fun AddNumField(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TextField(
         value = value,
@@ -210,18 +242,28 @@ fun AddNumField(
             imeAction = ImeAction.Next,
             capitalization = KeyboardCapitalization.Words,
             keyboardType = KeyboardType.Number
-        )
+        ),
+        modifier = modifier
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenre1Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre) -> Unit) {
+fun AddGenre1Field(
+    label: String,
+    selectedItem: Genre?,
+    onGenreSelected: (Genre) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,
@@ -250,12 +292,21 @@ fun AddGenre1Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddGenre2Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre?) -> Unit) {
+fun AddGenre2Field(
+    label: String,
+    selectedItem: Genre?,
+    onGenreSelected: (Genre?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,
@@ -287,14 +338,6 @@ fun AddGenre2Field(label: String, selectedItem: Genre?, onGenreSelected: (Genre?
         }
     }
 }
-
-
-
-
-
-
-
-
 
 
 @Composable
