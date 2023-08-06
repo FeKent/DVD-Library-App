@@ -52,7 +52,7 @@ fun IntroScreen(
     onAddBtnTap: () -> Unit,
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
-    editFilm: (Int) -> Unit,
+    editFilm: (Film) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var searchItem by remember { mutableStateOf("") }
@@ -132,7 +132,7 @@ fun FilmRow(
     film: Film,
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
-    editFilm: (Int) -> Unit,
+    editFilm: (Film) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val showDeleteDialog = remember { mutableStateOf(false) }
@@ -150,12 +150,10 @@ fun FilmRow(
     if (showEditDialog.value) {
         EditAlertDialog(
             onDismiss = { showEditDialog.value = false },
-            onConfirm = { editFilm(film.id); showEditDialog.value = false },
+            onConfirm = { editFilm(film); showEditDialog.value = false },
             filmName = film.title
         )
     }
-
-
 
     Box(
         modifier = modifier
