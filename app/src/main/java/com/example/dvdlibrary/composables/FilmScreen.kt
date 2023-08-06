@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -63,8 +64,8 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
             )
         } else {
             Text(
-                text = "Poster Could Not Load",
-                fontSize = 13.sp,
+                text = film.overview,
+                fontSize = 24.sp,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
@@ -73,7 +74,8 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                     .fillMaxWidth()
                     .height(600.dp)
                     .wrapContentHeight(Alignment.CenterVertically)
-                    .width(300.dp)
+                    .padding(horizontal = 56.dp)
+
             )
         }
 
@@ -110,7 +112,7 @@ fun FilmScreenPreview() {
             0,
             R.string.run_1,
             "Night of the Day of the Dawn of the Son of the Bride of the Return of the Revenge of the Terror of the Attack of the Evil, Mutant, Alien, Flesh Eating, Hellbound, Zombified Living Dead Part 2",
-            "R.drawable.generic_poster",
+            "",
             "A movie poster of two women standing back to back holding guns",
             "",
             R.string.year_1,
