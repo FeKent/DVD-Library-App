@@ -16,7 +16,7 @@ data class Film(
    val poster_path: String,
    val description: String,
    @StringRes val year: Int,
-   val director: String,
+   val starring: String,
    val genre1: Genre,
    val genre2: Genre? = null,
 ) : Parcelable

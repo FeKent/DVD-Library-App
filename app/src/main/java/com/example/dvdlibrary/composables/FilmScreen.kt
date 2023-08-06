@@ -87,17 +87,17 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Director: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-                Text(text = film.director, fontWeight = FontWeight.SemiBold)
+                Text(text = "Genre: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
+                Text(
+                    text = listOfNotNull(film.genre1, film.genre2).joinToString(separator = ", "){it.printName},
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Genre: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-            Text(
-                text = listOfNotNull(film.genre1, film.genre2).joinToString(separator = ", "){it.printName},
-                fontWeight = FontWeight.SemiBold
-            )
+            Text(text = "Starring: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
+            Text(text = film.starring, fontWeight = FontWeight.SemiBold)
         }
     }
 }

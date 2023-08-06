@@ -36,7 +36,7 @@ fun EditScreen(
     var title by remember { mutableStateOf(editDetails.title) }
     var runTime by remember { mutableStateOf(editDetails.runtime.toString()) }
     var year by remember { mutableStateOf(editDetails.year.toString()) }
-    var director by remember { mutableStateOf(editDetails.director) }
+    var starring by remember { mutableStateOf(editDetails.starring) }
     var genre by remember { mutableStateOf(editDetails.genre1) }
     var genre2: Genre? by remember { mutableStateOf(editDetails.genre2) }
 
@@ -55,7 +55,7 @@ fun EditScreen(
             AddTextField(label = "Title", value = title, onValueChange = { title = it })
             AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
             AddNumField(label = "Year", value = year, onValueChange = { year = it })
-            AddTextField(label = "Director", value = director, onValueChange = { director = it })
+            AddTextField(label = "Starring", value = starring, onValueChange = { starring = it })
             AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
             AddGenre2Field(
                 label = "Optional Genre",
@@ -77,7 +77,7 @@ fun EditScreen(
                                 poster_path = editDetails.poster_path,
                                 description = "",
                                 year = year.toInt(),
-                                director = director,
+                                starring = starring,
                                 genre1 = genre,
                                 genre2 = genre2,
                             ))

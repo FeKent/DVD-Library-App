@@ -1,6 +1,7 @@
 package com.example.dvdlibrary.composables
 
 import android.util.Log
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -63,7 +65,7 @@ fun AddScreen(
     var title by remember { mutableStateOf("") }
     var runTime by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
-    var director by remember { mutableStateOf("") }
+    var starring by remember { mutableStateOf("") }
     var genre by remember { mutableStateOf(Genre.Action) }
     var genre2: Genre? by remember { mutableStateOf(null) }
 
@@ -78,7 +80,7 @@ fun AddScreen(
             AddTextField(label = "Title", value = title, onValueChange = { title = it })
             AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
             AddNumField(label = "Year", value = year, onValueChange = { year = it })
-            AddTextField(label = "Director", value = director, onValueChange = { director = it })
+            AddTextField(label = "Starring", value = starring, onValueChange = { starring = it })
             AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
             AddGenre2Field(
                 label = "Optional Genre",
@@ -123,13 +125,13 @@ fun AddScreen(
                                 validationLabel.value = "Runtime"
                             } else if (title.isEmpty()) {
                                 validationLabel.value = "Title"
-                            } else if (director.isEmpty()) {
+                            } else if (starring.isEmpty()) {
                                 validationLabel.value = "Director"
                             } else if (!yearIsValid) {
                                 validationLabel.value = "Year"
                             }
 
-                            if (runTime.isEmpty() || title.isEmpty() || director.isEmpty() || !yearIsValid) {
+                            if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
                                 showValidLogState.value = true
                                 return@launch
                             }
@@ -141,7 +143,7 @@ fun AddScreen(
                                     poster_path = posterUrl,
                                     "",
                                     year.toInt(),
-                                    director,
+                                    starring,
                                     genre,
                                     genre2,
                                 )
@@ -184,11 +186,13 @@ fun AddTextField(
     TextField(
         value = value,
         onValueChange = { onValueChange(it) },
+        singleLine = true,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
             capitalization = KeyboardCapitalization.Words
-        )
+        ),
+        modifier = Modifier.horizontalScroll(rememberScrollState())
     )
 }
 
