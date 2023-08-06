@@ -148,7 +148,8 @@ fun DvdApp() {
                 films = films.sortedBy(Film::title),
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } }
+                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
+                editFilm = {}
             )
         }
         composable(Screen.Add.route) {
