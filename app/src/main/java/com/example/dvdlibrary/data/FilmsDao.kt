@@ -16,6 +16,9 @@ interface FilmsDao {
     @Delete
     suspend fun delete(film: Film)
 
+    @Update
+    suspend fun editFilm(film: Film)
+
     @Query ("SELECT * FROM film")
     fun allFilms(): Flow<List<Film>>
 

@@ -30,6 +30,7 @@ fun EditScreen(
     filmName: String,
     editDetails: Film,
     navigateBack: () -> Unit,
+    onFilmEdited: (Film) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var title by remember { mutableStateOf("${editDetails.title}") }
@@ -66,17 +67,30 @@ fun EditScreen(
                     navigateBack()
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-                EditFilms {
-
-                }
+                EditFilms(
+                    onEditSaveTap = {
+                        onFilmEdited(
+                            Film(
+                                id = editDetails.id,
+                                runtime = runTime.toInt(),
+                                title = title,
+                                poster_path = editDetails.poster_path,
+                                description = "",
+                                year = year.toInt(),
+                                director = director,
+                                genre1 = genre,
+                                genre2 = genre2,
+                            ))
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun EditFilms(onSaveTap: () -> Unit) {
-    FloatingActionButton(onClick = { onSaveTap() }, content = ({
+fun EditFilms(onEditSaveTap: () -> Unit) {
+    FloatingActionButton(onClick = { onEditSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
             contentDescription = "Save Button",

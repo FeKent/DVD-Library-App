@@ -188,7 +188,14 @@ fun DvdApp() {
                     EditScreen(
                         filmName = it.title,
                         editDetails = it,
-                        navigateBack = { navController.popBackStack() })
+                        navigateBack = { navController.popBackStack() },
+                        onFilmEdited = {
+                            coroutineScope.launch {
+                                database.filmsDao().editFilm(it)
+                                navController.popBackStack()
+                            }
+                        }
+                    )
                 }
 
             }
