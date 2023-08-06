@@ -63,22 +63,38 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                     .width(300.dp)
             )
         } else {
-            Text(
-                text = film.overview,
-                fontSize = 24.sp,
-                fontStyle = FontStyle.Italic,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(600.dp)
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .padding(horizontal = 56.dp)
+            if (film.overview.isNotEmpty()) {
+                Text(
+                    text = film.overview,
+                    fontSize = 24.sp,
+                    fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(600.dp)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .padding(horizontal = 56.dp)
 
-            )
+                )
+            } else {
+                Text(
+                    text = "Poster & Overview unavailable",
+                    fontSize = 13.sp,
+                    fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(600.dp)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .width(300.dp)
+
+                )
+            }
         }
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -91,7 +107,10 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Genre: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
                 Text(
-                    text = listOfNotNull(film.genre1, film.genre2).joinToString(separator = ", "){it.printName},
+                    text = listOfNotNull(
+                        film.genre1,
+                        film.genre2
+                    ).joinToString(separator = ", ") { it.printName },
                     fontWeight = FontWeight.SemiBold
                 )
             }
