@@ -6,7 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DeleteAlertDialog(
+fun EditAlertDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     filmName: String,
@@ -23,7 +23,6 @@ fun DeleteAlertDialog(
                 Text(text = "Cancel")
             }
         },
-        text = { Text(text = "Delete ${filmName}?") }
+        text = { Text(text = "Edit ${filmName}?") }
     )
 }
-

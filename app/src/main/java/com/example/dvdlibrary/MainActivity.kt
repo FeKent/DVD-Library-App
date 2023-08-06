@@ -3,9 +3,10 @@ package com.example.dvdlibrary
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -14,8 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,15 +28,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.dvdlibrary.composables.AddScreen
+import com.example.dvdlibrary.composables.EditScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -118,6 +120,7 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
+    object Edit : Screen("edit/{filmId}")
     object Details : Screen("details/{filmId}")
 
 }
@@ -148,9 +151,11 @@ fun DvdApp() {
                 films = films.sortedBy(Film::title),
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } }
+                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
+                editFilm = { film -> navController.navigate("edit/${film.id}") }
             )
         }
+
         composable(Screen.Add.route) {
             AddScreen(
                 onFilmEntered = { newFilm ->
@@ -169,6 +174,36 @@ fun DvdApp() {
             )
         }
         composable(
+            Screen.Edit.route,
+            arguments = listOf(navArgument("filmId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val filmId = backStackEntry.arguments?.getInt("filmId")
+            if (filmId != null) {
+                var film: Film? by remember { mutableStateOf(null) }
+
+                LaunchedEffect(key1 = Unit) {
+                    film = database.filmsDao().getFilm(filmId)
+                }
+
+                film?.let {
+                    EditScreen(
+                        filmName = it.title,
+                        editDetails = it,
+                        navigateBack = { navController.popBackStack() },
+                        onFilmEdited = {
+                            coroutineScope.launch {
+                                database.filmsDao().editFilm(it)
+                                navController.popBackStack()
+                            }
+                        }
+                    )
+                }
+
+            }
+
+        }
+
+        composable(
             Screen.Details.route,
             arguments = listOf(navArgument("filmId") { type = NavType.IntType })
         ) { backStackEntry ->
@@ -176,19 +211,20 @@ fun DvdApp() {
             if (filmId != null) {
                 var film: Film? by remember { mutableStateOf(null) }
 
-                LaunchedEffect(key1 = Unit){
-                    delay(2000)
-                    // remove delay after loading indicator is added
+                LaunchedEffect(key1 = Unit) {
                     film = database.filmsDao().getFilm(filmId)
                 }
 
-                film?.let{
+                film?.let {
                     FilmScreen(
                         film = it,
                         onReturnTap = { navController.popBackStack() })
-                } ?: run{
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Yellow)) {
-                        // loading indicator
+                } ?: run {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(150.dp), strokeWidth = 8.dp)
                     }
                 }
             }
