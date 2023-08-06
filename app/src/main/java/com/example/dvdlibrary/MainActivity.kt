@@ -3,7 +3,6 @@ package com.example.dvdlibrary
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -19,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,7 +34,6 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
