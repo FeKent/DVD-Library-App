@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 
@@ -20,4 +21,7 @@ interface FilmsDao {
 
     @Query ("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
     suspend fun getFilm(filmId: Int): Film
+
+    @Update
+    suspend fun updateFilm(film: Film, filmId: Int)
 }
