@@ -31,7 +31,7 @@ fun EditScreen(
     editDetails: Film,
     navigateBack: () -> Unit,
     onFilmEdited: (Film) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var title by remember { mutableStateOf(editDetails.title) }
     var runTime by remember { mutableStateOf(editDetails.runtime.toString()) }
@@ -42,7 +42,9 @@ fun EditScreen(
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = modifier,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 56.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(8.dp))
@@ -52,15 +54,41 @@ fun EditScreen(
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.padding(32.dp))
-            AddTextField(label = "Title", value = title, onValueChange = { title = it })
-            AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
-            AddNumField(label = "Year", value = year, onValueChange = { year = it })
-            AddTextField(label = "Starring", value = starring, onValueChange = { starring = it })
-            AddGenre1Field(label = "Genre", selectedItem = genre, onGenreSelected = {genre = it})
+            AddTextField(
+                label = "Title",
+                value = title,
+                onValueChange = { title = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddNumField(
+                label = "Runtime",
+                value = runTime,
+                onValueChange = { runTime = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddNumField(
+                label = "Year",
+                value = year,
+                onValueChange = { year = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddTextField(
+                label = "Starring",
+                value = starring,
+                onValueChange = { starring = it },
+                modifier = Modifier.fillMaxWidth()
+            )
+            AddGenre1Field(
+                label = "Genre",
+                selectedItem = genre,
+                onGenreSelected = { genre = it },
+                modifier = Modifier.fillMaxWidth()
+            )
             AddGenre2Field(
                 label = "Optional Genre",
                 selectedItem = genre2,
-                onGenreSelected = { genre2 = it })
+                onGenreSelected = { genre2 = it }, modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.padding(24.dp))
             Row {
                 BackButton {
@@ -80,7 +108,8 @@ fun EditScreen(
                                 starring = starring,
                                 genre1 = genre,
                                 genre2 = genre2,
-                            ))
+                            )
+                        )
                     }
                 )
             }
