@@ -142,6 +142,19 @@ fun AddScreen(
                             } else {
                                 ""
                             }
+                            val getOverview = if (movies.isNotEmpty()) {
+                                val beginningMovie = movies[0]
+                                Log.d("overview", beginningMovie.overview.toString())
+                                if (beginningMovie.overview != null) {
+                                    beginningMovie.overview.toString()
+                                } else {
+                                    ""
+                                }
+                            } else {
+                                ""
+                            }
+
+
                             val yearIsValid: Boolean = try {
                                 val intYear = year.toInt()
                                 intYear > 1900 && intYear < LocalDate.now().year + 1
@@ -169,7 +182,7 @@ fun AddScreen(
                                     runTime.toInt(),
                                     title,
                                     poster_path = posterUrl,
-                                    overview = "",
+                                    overview = getOverview,
                                     "",
                                     year.toInt(),
                                     starring,
@@ -264,7 +277,9 @@ fun AddGenre1Field(
         modifier = modifier
     ) {
         TextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,
@@ -307,7 +322,9 @@ fun AddGenre2Field(
         modifier = modifier
     ) {
         TextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             value = selectedItem?.printName ?: "No Genre Selected",
             onValueChange = {},
             readOnly = true,

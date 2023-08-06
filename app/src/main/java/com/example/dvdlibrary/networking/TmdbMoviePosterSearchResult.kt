@@ -9,7 +9,8 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 
 data class TmdbMoviePosterSearchResult(
-    val poster_path: String?
+    val poster_path: String?,
+    val overview: String?
 )
 
 
