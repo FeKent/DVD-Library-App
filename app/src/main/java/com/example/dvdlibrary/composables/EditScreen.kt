@@ -33,10 +33,10 @@ fun EditScreen(
     onFilmEdited: (Film) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var title by remember { mutableStateOf("${editDetails.title}") }
-    var runTime by remember { mutableStateOf("${editDetails.runtime}") }
-    var year by remember { mutableStateOf("${editDetails.year}") }
-    var director by remember { mutableStateOf("${editDetails.director}") }
+    var title by remember { mutableStateOf(editDetails.title) }
+    var runTime by remember { mutableStateOf(editDetails.runtime.toString()) }
+    var year by remember { mutableStateOf(editDetails.year.toString()) }
+    var director by remember { mutableStateOf(editDetails.director) }
     var genre by remember { mutableStateOf(editDetails.genre1) }
     var genre2: Genre? by remember { mutableStateOf(editDetails.genre2) }
 
