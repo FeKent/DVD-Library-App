@@ -2,6 +2,7 @@ package com.example.dvdlibrary.composables
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import com.example.dvdlibrary.data.Genre
 fun EditScreen(
     filmName: String,
     editDetails: Film,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var title by remember { mutableStateOf("${editDetails.title}") }
@@ -38,7 +40,11 @@ fun EditScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "Edit '${filmName}' Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = "Edit '${filmName}' Details",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.SemiBold
+            )
             Spacer(modifier = Modifier.padding(32.dp))
             AddTextField(label = "Title", value = title, onValueChange = { title = it })
             AddNumField(label = "Runtime", value = runTime, onValueChange = { runTime = it })
@@ -49,6 +55,16 @@ fun EditScreen(
                 label = "Optional Genre",
                 selectedItem = genre2,
                 onGenreSelected = { genre2 = it })
+            Spacer(modifier = Modifier.padding(24.dp))
+            Row {
+                BackButton {
+                    navigateBack()
+                }
+                Spacer(modifier = Modifier.padding(horizontal = 16.dp))
+                AddFilms {
+
+                }
+            }
         }
     }
 }

@@ -151,7 +151,7 @@ fun DvdApp() {
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
-                editFilm = { film ->  navController.navigate("edit/${film.id}") }
+                editFilm = { film -> navController.navigate("edit/${film.id}") }
             )
         }
 
@@ -185,7 +185,10 @@ fun DvdApp() {
                 }
 
                 film?.let {
-                    EditScreen(filmName = it.title, editDetails = it)
+                    EditScreen(
+                        filmName = it.title,
+                        editDetails = it,
+                        navigateBack = { navController.popBackStack() })
                 }
 
             }
