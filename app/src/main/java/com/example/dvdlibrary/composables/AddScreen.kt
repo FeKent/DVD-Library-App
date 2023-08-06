@@ -169,6 +169,7 @@ fun AddScreen(
                                     runTime.toInt(),
                                     title,
                                     poster_path = posterUrl,
+                                    overview = "",
                                     "",
                                     year.toInt(),
                                     starring,

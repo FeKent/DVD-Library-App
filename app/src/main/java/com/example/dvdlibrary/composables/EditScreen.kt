@@ -103,6 +103,7 @@ fun EditScreen(
                                 runtime = runTime.toInt(),
                                 title = title,
                                 poster_path = editDetails.poster_path,
+                                overview = editDetails.overview,
                                 description = "",
                                 year = year.toInt(),
                                 starring = starring,

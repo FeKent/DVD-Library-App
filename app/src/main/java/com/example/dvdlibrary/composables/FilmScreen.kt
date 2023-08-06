@@ -112,6 +112,7 @@ fun FilmScreenPreview() {
             "Night of the Day of the Dawn of the Son of the Bride of the Return of the Revenge of the Terror of the Attack of the Evil, Mutant, Alien, Flesh Eating, Hellbound, Zombified Living Dead Part 2",
             "R.drawable.generic_poster",
             "A movie poster of two women standing back to back holding guns",
+            "",
             R.string.year_1,
             "Paul W. S. Anderson",
             Genre.Zombie,
