@@ -95,6 +95,7 @@ fun IntroScreen(
                     },
                     onClearTap = { searchItem = "" },
                     modifier = Modifier.padding(top = 16.dp),
+                    label = "Film ${filterItems[currentFilterItem]}"
                 )
 
                 Box {
@@ -149,6 +150,7 @@ fun SearchTextField(
     searchTerm: String,
     onSearchTermChange: (String) -> Unit,
     onClearTap: () -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
@@ -161,7 +163,7 @@ fun SearchTextField(
         ),
         singleLine = true,
         modifier = modifier,
-        label = { Text(text = "Film Name", fontStyle = FontStyle.Italic) },
+        label = { Text(text = label, fontStyle = FontStyle.Italic) },
         leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
         trailingIcon = {
             IconButton(onClick = { onClearTap() }) {
