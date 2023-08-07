@@ -19,7 +19,7 @@ import com.example.dvdlibrary.R
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrime,
-    secondary = PurpleGrey80,
+    secondary = LightPrime,
     tertiary = Pink80,
     background = Dark,
     onBackground = Light,
@@ -27,13 +27,13 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = Dark,
     onSurface = Dark,
     primaryContainer = DarkPrime,
-    onPrimaryContainer = Light,
+    onPrimaryContainer = LightPrime,
 
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = LightPrime,
-    secondary = PurpleGrey40,
+    secondary = DarkPrime,
     tertiary = Pink40,
     background = Light,
     onBackground = Dark,

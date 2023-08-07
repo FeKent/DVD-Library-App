@@ -14,6 +14,7 @@ data class Film(
    @StringRes val runtime: Int,
    val title: String,
    val poster_path: String,
+   val overview: String,
    val description: String,
    @StringRes val year: Int,
    val starring: String,
