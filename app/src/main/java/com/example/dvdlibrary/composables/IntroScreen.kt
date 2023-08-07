@@ -62,7 +62,7 @@ fun IntroScreen(
 ) {
     var searchItem by remember { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime")
-    val filterItems = arrayOf("Title", "Year", "Starring")
+    val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
     var currentSortItem by remember { mutableStateOf(0) }
     var currentFilterItem by remember { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
@@ -134,6 +134,7 @@ fun IntroScreen(
                     0 -> films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
                     1 -> films.filter { film -> film.year.toString() == searchItem }
                     2 -> films.filter { film -> film.starring.contains(searchItem) }
+                    3 -> films.filter { film -> film.genre1.toString() == searchItem || film.genre2?.toString() == searchItem }
                     else -> emptyList()
                 }
 
