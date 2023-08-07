@@ -95,7 +95,7 @@ fun FlipCard(
 
 @Preview
 @Composable
-fun flipPreview() {
+fun FlipPreview() {
     var cardFace by remember { mutableStateOf(CardFace.Front) }
 
     FlipCard(
