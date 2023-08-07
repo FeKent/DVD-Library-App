@@ -63,7 +63,8 @@ fun IntroScreen(
     var searchItem by remember { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime")
     val filterItems = arrayOf("Title", "Year", "Starring")
-    val disabledItem = 0
+    var currentSortItem by remember { mutableStateOf(0) }
+    var currentFilterItem by remember { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
@@ -82,7 +83,7 @@ fun IntroScreen(
 
                     DropdownMenu(expanded = expandedSort, onDismissRequest = { expandedSort = false }) {
                         sortItems.forEachIndexed { itemIndex, itemValue ->
-                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expandedSort = false }, enabled = (itemIndex != disabledItem))
+                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { currentSortItem = itemIndex ; expandedSort = false }, enabled = (itemIndex != currentSortItem))
                         }
                     }
                 }
@@ -106,7 +107,7 @@ fun IntroScreen(
 
                     DropdownMenu(expanded = expandedFilter, onDismissRequest = { expandedFilter = false }) {
                         filterItems.forEachIndexed { itemIndex, itemValue ->
-                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expandedFilter = false }, enabled = (itemIndex != disabledItem))
+                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { currentFilterItem = itemIndex ; expandedFilter = false }, enabled = (itemIndex != currentFilterItem))
                         }
                     }
                 }
