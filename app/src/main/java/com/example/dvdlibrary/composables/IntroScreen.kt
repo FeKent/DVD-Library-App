@@ -121,7 +121,15 @@ fun IntroScreen(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+
+                val filmFilters = when (currentFilterItem){
+                    0 -> films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+                    1 -> films.filter { film -> film.year.toString() == searchItem }
+                    2 -> films.filter { film -> film.starring.contains(searchItem) }
+                    else -> emptyList()
+                }
+
+                filmFilters
                     .forEach {
                         FilmRow(
                             film = it,
@@ -166,7 +174,7 @@ fun SearchTextField(
         label = { Text(text = label, fontStyle = FontStyle.Italic) },
         leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
         trailingIcon = {
-            IconButton(onClick = { onClearTap() }) {
+            IconButton(onClick = { focusManager.clearFocus() ; onClearTap() }) {
                 Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon")
             }
         })
