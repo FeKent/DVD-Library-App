@@ -86,6 +86,14 @@ fun IntroScreen(
                             DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { currentSortItem = itemIndex ; expandedSort = false }, enabled = (itemIndex != currentSortItem))
                         }
                     }
+
+                    val sortMetric: String = when (currentSortItem) {
+                        0 -> "Film::title"
+                        1 -> "Film::genre1"
+                        2 -> "Film::year"
+                        else -> "Film::runtime"
+                    }
+
                 }
 
                 SearchTextField(
