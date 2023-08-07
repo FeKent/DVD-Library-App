@@ -1,5 +1,6 @@
 @file:OptIn(
-    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class,
     ExperimentalFoundationApi::class
 )
 
@@ -24,6 +25,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,21 +61,30 @@ fun IntroScreen(
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
+    val listItems = arrayOf("Title", "Genre", "Year", "Runtime")
+    val disabledItem = 0
+    var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row {
-                Icon(
-                    painter = painterResource(R.drawable.ic_sort),
-                    contentDescription = "Sort Button",
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .size(50.dp)
-                        .clickable { /*TODO*/ }
-                )
+                Box {
+                    Icon(painter = painterResource(R.drawable.ic_sort),
+                        contentDescription = "Sort Button",
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .size(50.dp)
+                            .clickable { expanded = true })
+                }
+
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    listItems.forEachIndexed { itemIndex, itemValue ->
+                        DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expanded = false }, enabled = (itemIndex != disabledItem))
+                    }
+                }
+
                 SearchTextField(
                     searchTerm = searchItem,
                     onSearchTermChange = {
@@ -81,14 +93,12 @@ fun IntroScreen(
                     onClearTap = { searchItem = "" },
                     modifier = Modifier.padding(top = 16.dp),
                 )
-                Icon(
-                    painter = painterResource(R.drawable.ic_filter),
+                Icon(painter = painterResource(R.drawable.ic_filter),
                     contentDescription = "Filter Button",
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .size(50.dp)
-                        .clickable { /*TODO*/ }
-                )
+                        .clickable { /*TODO*/ })
             }
             Spacer(modifier = Modifier.height(24.dp))
             Column(
@@ -97,8 +107,7 @@ fun IntroScreen(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                films
-                    .filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+                films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
                     .forEach {
                         FilmRow(
                             film = it,
@@ -131,13 +140,11 @@ fun SearchTextField(
 ) {
     val focusManager = LocalFocusManager.current
 
-    TextField(
-        value = searchTerm,
+    TextField(value = searchTerm,
         onValueChange = { onSearchTermChange(it) },
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
+            keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
         ),
         singleLine = true,
         modifier = modifier,
@@ -147,8 +154,7 @@ fun SearchTextField(
             IconButton(onClick = { onClearTap() }) {
                 Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon")
             }
-        }
-    )
+        })
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -173,24 +179,19 @@ fun FilmRow(
     val showEditDialog = remember { mutableStateOf(false) }
 
     if (showEditDialog.value) {
-        EditAlertDialog(
-            onDismiss = { showEditDialog.value = false },
+        EditAlertDialog(onDismiss = { showEditDialog.value = false },
             onConfirm = { editFilm(film); showEditDialog.value = false },
             filmName = film.title
         )
     }
 
-    Box(
-        modifier = modifier
-            .padding(horizontal = 24.dp)
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = { onFilmTap(film) },
-                onDoubleClick = { showDeleteDialog.value = true },
-                onLongClick = { showEditDialog.value = true }
-            )
-    ) {
+    Box(modifier = modifier
+        .padding(horizontal = 24.dp)
+        .background(color = MaterialTheme.colorScheme.surfaceVariant)
+        .fillMaxWidth()
+        .combinedClickable(onClick = { onFilmTap(film) },
+            onDoubleClick = { showDeleteDialog.value = true },
+            onLongClick = { showEditDialog.value = true })) {
         Row {
             Spacer(modifier = modifier.padding(4.dp))
             Image(
