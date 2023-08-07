@@ -167,7 +167,7 @@ fun AddScreen(
                             } else if (title.isEmpty()) {
                                 validationLabel.value = "Title"
                             } else if (starring.isEmpty()) {
-                                validationLabel.value = "Director"
+                                validationLabel.value = "Starring"
                             } else if (!yearIsValid) {
                                 validationLabel.value = "Year"
                             }

@@ -8,6 +8,7 @@ package com.example.dvdlibrary.composables
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -53,7 +55,7 @@ fun IntroScreen(
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
 
@@ -62,14 +64,32 @@ fun IntroScreen(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SearchTextField(
-                searchTerm = searchItem,
-                onSearchTermChange = {
-                    searchItem = it
-                },
-                onClearTap = { searchItem = "" },
-                modifier = Modifier.padding(top = 16.dp),
-            )
+            Row {
+                Icon(
+                    painter = painterResource(R.drawable.ic_sort),
+                    contentDescription = "Sort Button",
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(50.dp)
+                        .clickable { /*TODO*/ }
+                )
+                SearchTextField(
+                    searchTerm = searchItem,
+                    onSearchTermChange = {
+                        searchItem = it
+                    },
+                    onClearTap = { searchItem = "" },
+                    modifier = Modifier.padding(top = 16.dp),
+                )
+                Icon(
+                    painter = painterResource(R.drawable.ic_filter),
+                    contentDescription = "Filter Button",
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(50.dp)
+                        .clickable { /*TODO*/ }
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             Column(
                 modifier = Modifier
@@ -80,7 +100,12 @@ fun IntroScreen(
                 films
                     .filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
                     .forEach {
-                        FilmRow(film = it, onFilmTap = onFilmTap, removeFilm = removeFilm, editFilm = editFilm)
+                        FilmRow(
+                            film = it,
+                            onFilmTap = onFilmTap,
+                            removeFilm = removeFilm,
+                            editFilm = editFilm
+                        )
                     }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -102,7 +127,7 @@ fun SearchTextField(
     searchTerm: String,
     onSearchTermChange: (String) -> Unit,
     onClearTap: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -133,7 +158,7 @@ fun FilmRow(
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val showDeleteDialog = remember { mutableStateOf(false) }
 
@@ -163,7 +188,7 @@ fun FilmRow(
             .combinedClickable(
                 onClick = { onFilmTap(film) },
                 onDoubleClick = { showDeleteDialog.value = true },
-                onLongClick = {showEditDialog.value = true}
+                onLongClick = { showEditDialog.value = true }
             )
     ) {
         Row {
