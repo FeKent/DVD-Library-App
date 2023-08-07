@@ -61,9 +61,11 @@ fun IntroScreen(
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
-    val listItems = arrayOf("Title", "Genre", "Year", "Runtime")
+    val sortItems = arrayOf("Title", "Genre", "Year", "Runtime")
+    val filterItems = arrayOf("Title", "Year", "Starring")
     val disabledItem = 0
-    var expanded by remember { mutableStateOf(false) }
+    var expandedSort by remember { mutableStateOf(false) }
+    var expandedFilter by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
@@ -76,12 +78,12 @@ fun IntroScreen(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .size(50.dp)
-                            .clickable { expanded = true })
-                }
+                            .clickable { expandedSort = true })
 
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    listItems.forEachIndexed { itemIndex, itemValue ->
-                        DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expanded = false }, enabled = (itemIndex != disabledItem))
+                    DropdownMenu(expanded = expandedSort, onDismissRequest = { expandedSort = false }) {
+                        sortItems.forEachIndexed { itemIndex, itemValue ->
+                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expandedSort = false }, enabled = (itemIndex != disabledItem))
+                        }
                     }
                 }
 
@@ -93,12 +95,22 @@ fun IntroScreen(
                     onClearTap = { searchItem = "" },
                     modifier = Modifier.padding(top = 16.dp),
                 )
-                Icon(painter = painterResource(R.drawable.ic_filter),
-                    contentDescription = "Filter Button",
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .size(50.dp)
-                        .clickable { /*TODO*/ })
+
+                Box {
+                    Icon(painter = painterResource(R.drawable.ic_filter),
+                        contentDescription = "Filter Button",
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .size(50.dp)
+                            .clickable { expandedFilter = true })
+
+                    DropdownMenu(expanded = expandedFilter, onDismissRequest = { expandedFilter = false }) {
+                        filterItems.forEachIndexed { itemIndex, itemValue ->
+                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { expandedFilter = false }, enabled = (itemIndex != disabledItem))
+                        }
+                    }
+                }
+
             }
             Spacer(modifier = Modifier.height(24.dp))
             Column(
