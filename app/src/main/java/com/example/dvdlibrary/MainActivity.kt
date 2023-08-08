@@ -99,8 +99,8 @@ fun DvdApp() {
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
-                currentSortItem = currentSortItemState, // Pass the currentSortItem state
-                updateSortItem = { newItem -> currentSortItemState = newItem } // Pass the update callback
+                currentSortItem = currentSortItemState,
+                updateSortItem = { newItem -> currentSortItemState = newItem }
             )
         }
 
