@@ -172,11 +172,8 @@ fun IntroScreen(
                     }
 
                     3 -> films.filter { film ->
-                        film.genre1.printName.lowercase()
-                            .contains(searchItem.lowercase()) || (film.genre2?.printName?.lowercase()
-                            ?.contains(
-                                searchItem.lowercase()
-                            ) ?: film.genre2?.toString()) == searchItem
+                        film.genre1.printName.lowercase().contains(searchItem.lowercase()) ||
+                                film.genre2!!.printName.lowercase().contains(searchItem.lowercase())
                     }
 
                     else -> emptyList()
@@ -220,7 +217,9 @@ fun SearchTextField(
         onValueChange = { onSearchTermChange(it) },
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text, imeAction = ImeAction.Search, capitalization = KeyboardCapitalization.Words
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search,
+            capitalization = KeyboardCapitalization.Words
         ),
         singleLine = true,
         modifier = modifier,
