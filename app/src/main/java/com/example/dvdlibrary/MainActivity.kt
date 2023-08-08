@@ -83,14 +83,15 @@ fun DvdApp() {
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
     var currentSortItemState by remember { mutableStateOf(0) }
+    var sortOrder by remember { mutableStateOf(0) }
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
             val filmSorted = when (currentSortItemState) {
-                0 -> films.sortedBy { it.title }
-                1 -> films.sortedBy { it.genre1 }
-                2 -> films.sortedBy { it.year }
-                3 -> films.sortedBy { it.runtime }
+                0 -> if (sortOrder == 0) films.sortedBy { it.title } else films.sortedByDescending { it.title }
+                1 -> if (sortOrder == 0) films.sortedBy { it.genre1 } else films.sortedByDescending { it.genre1 }
+                2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
+                3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
                 else -> films.sortedBy { it.title }
             }
             IntroScreen(
@@ -100,7 +101,9 @@ fun DvdApp() {
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
-                updateSortItem = { newItem -> currentSortItemState = newItem }
+                updateSortItem = { newItem -> currentSortItemState = newItem },
+                sortOrder = sortOrder,
+                updateSortOrder = {newItem -> sortOrder = newItem}
             )
         }
 

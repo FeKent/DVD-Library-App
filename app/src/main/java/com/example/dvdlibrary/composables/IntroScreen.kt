@@ -37,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -59,8 +58,10 @@ fun IntroScreen(
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
-    currentSortItem: Int, // Add currentSortItem parameter
-    updateSortItem: (Int) -> Unit, // Add updateSortItem callback
+    currentSortItem: Int,
+    updateSortItem: (Int) -> Unit,
+    sortOrder: Int,
+    updateSortOrder: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
@@ -76,10 +77,25 @@ fun IntroScreen(
         ) {
             Row {
                 Box {
+                    val isCurrentSortOrder: Boolean = 0 == sortOrder
+                    val iconRes = if (isCurrentSortOrder) {
+                        R.drawable.ic_sort_arrow_up
+                    } else {
+                        R.drawable.ic_sort_arrow_down
+                    }
+                    Icon(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = if (isCurrentSortOrder) "Ascending Order" else "Descending Order",
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(30.dp)
+                            .clickable { updateSortOrder(if (isCurrentSortOrder) 1 else 0) }
+                    )
+
                     Icon(painter = painterResource(R.drawable.ic_sort),
                         contentDescription = "Sort Button",
                         modifier = Modifier
-                            .padding(top = 20.dp)
+                            .padding(top = 24.dp)
                             .size(50.dp)
                             .clickable { expandedSort = true })
 
@@ -116,7 +132,7 @@ fun IntroScreen(
                     Icon(painter = painterResource(R.drawable.ic_filter),
                         contentDescription = "Filter Button",
                         modifier = Modifier
-                            .padding(top = 20.dp)
+                            .padding(top = 24.dp)
                             .size(50.dp)
                             .clickable { expandedFilter = true })
 
@@ -132,8 +148,8 @@ fun IntroScreen(
                         }
                     }
                 }
-
             }
+
             Spacer(modifier = Modifier.height(24.dp))
             Column(
                 modifier = Modifier
