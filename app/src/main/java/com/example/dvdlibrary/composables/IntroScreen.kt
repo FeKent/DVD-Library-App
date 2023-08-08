@@ -134,7 +134,7 @@ fun IntroScreen(
                     Icon(painter = painterResource(R.drawable.ic_filter),
                         contentDescription = "Filter Button",
                         modifier = Modifier
-                            .padding(top = 30.dp)
+                            .padding(top = 20.dp)
                             .size(50.dp)
                             .clickable { expandedFilter = true })
 
