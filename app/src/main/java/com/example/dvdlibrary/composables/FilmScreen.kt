@@ -160,7 +160,7 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Starring: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-            Text(text = film.starring, fontWeight = FontWeight.SemiBold)
+            Text(text = film.starring, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 2.dp))
         }
     }
 }
