@@ -41,6 +41,7 @@ import com.example.dvdlibrary.data.Genre
 fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
+            .padding(vertical = 4.dp)
             .fillMaxHeight()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceEvenly,
