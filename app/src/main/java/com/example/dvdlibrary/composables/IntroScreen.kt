@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -88,14 +89,15 @@ fun IntroScreen(
                         contentDescription = if (isCurrentSortOrder) "Ascending Order" else "Descending Order",
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .size(30.dp)
+                            .width(50.dp)
+                            .scale(1.5f)
                             .clickable { updateSortOrder(if (isCurrentSortOrder) 1 else 0) }
                     )
 
                     Icon(painter = painterResource(R.drawable.ic_sort),
                         contentDescription = "Sort Button",
                         modifier = Modifier
-                            .padding(top = 24.dp)
+                            .padding(top = 30.dp)
                             .size(50.dp)
                             .clickable { expandedSort = true })
 
@@ -132,7 +134,7 @@ fun IntroScreen(
                     Icon(painter = painterResource(R.drawable.ic_filter),
                         contentDescription = "Filter Button",
                         modifier = Modifier
-                            .padding(top = 24.dp)
+                            .padding(top = 30.dp)
                             .size(50.dp)
                             .clickable { expandedFilter = true })
 
