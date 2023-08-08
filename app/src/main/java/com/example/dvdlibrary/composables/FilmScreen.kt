@@ -99,12 +99,12 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                                     .fillMaxWidth()
                                     .height(600.dp)
                                     .wrapContentHeight(Alignment.CenterVertically)
-                                    .padding(horizontal = 56.dp)
+                                    .padding(horizontal = 56.dp, vertical = 20.dp)
+                                    .verticalScroll(rememberScrollState())
                             )
                         }
                     }
                 })
-
 
         } else {
             if (film.overview.isNotEmpty()) {
@@ -119,8 +119,7 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                         .fillMaxWidth()
                         .height(600.dp)
                         .wrapContentHeight(Alignment.CenterVertically)
-                        .padding(horizontal = 56.dp)
-
+                        .width(300.dp)
                 )
             } else {
                 Text(
@@ -135,10 +134,10 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                         .height(600.dp)
                         .wrapContentHeight(Alignment.CenterVertically)
                         .width(300.dp)
-
                 )
             }
         }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
