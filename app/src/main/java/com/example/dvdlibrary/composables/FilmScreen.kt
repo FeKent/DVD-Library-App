@@ -82,7 +82,9 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
                 },
                 back = {
                     Box(
-                        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.secondary),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.secondary),
                         contentAlignment = Alignment.Center,
                     ) {
                         if (film.overview.isNotEmpty()) {
@@ -160,7 +162,12 @@ fun FilmScreen(film: Film, onReturnTap: () -> Unit, modifier: Modifier = Modifie
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Starring: ", fontSize = 13.sp, fontStyle = FontStyle.Italic)
-            Text(text = film.starring, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 2.dp))
+            Text(
+                text = film.starring,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 2.dp)
+            )
         }
     }
 }

@@ -81,9 +81,15 @@ fun IntroScreen(
                             .size(50.dp)
                             .clickable { expandedSort = true })
 
-                    DropdownMenu(expanded = expandedSort, onDismissRequest = { expandedSort = false }) {
+                    DropdownMenu(
+                        expanded = expandedSort,
+                        onDismissRequest = { expandedSort = false }) {
                         sortItems.forEachIndexed { itemIndex, itemValue ->
-                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { currentSortItem = itemIndex ; expandedSort = false }, enabled = (itemIndex != currentSortItem))
+                            DropdownMenuItem(
+                                text = { Text(text = itemValue) },
+                                onClick = { currentSortItem = itemIndex; expandedSort = false },
+                                enabled = (itemIndex != currentSortItem)
+                            )
                         }
                     }
 
@@ -114,9 +120,15 @@ fun IntroScreen(
                             .size(50.dp)
                             .clickable { expandedFilter = true })
 
-                    DropdownMenu(expanded = expandedFilter, onDismissRequest = { expandedFilter = false }) {
+                    DropdownMenu(
+                        expanded = expandedFilter,
+                        onDismissRequest = { expandedFilter = false }) {
                         filterItems.forEachIndexed { itemIndex, itemValue ->
-                            DropdownMenuItem(text = {Text(text = itemValue)}, onClick = { currentFilterItem = itemIndex ; expandedFilter = false }, enabled = (itemIndex != currentFilterItem))
+                            DropdownMenuItem(
+                                text = { Text(text = itemValue) },
+                                onClick = { currentFilterItem = itemIndex; expandedFilter = false },
+                                enabled = (itemIndex != currentFilterItem)
+                            )
                         }
                     }
                 }
@@ -130,10 +142,16 @@ fun IntroScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                val filmFilters = when (currentFilterItem){
-                    0 -> films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
+                val filmFilters = when (currentFilterItem) {
+                    0 -> films.filter { film ->
+                        film.title.lowercase().contains(searchItem.lowercase())
+                    }
+
                     1 -> films.filter { film -> film.year.toString() == searchItem }
-                    2 -> films.filter { film -> film.starring.lowercase().contains(searchItem.lowercase()) }
+                    2 -> films.filter { film ->
+                        film.starring.lowercase().contains(searchItem.lowercase())
+                    }
+
                     3 -> films.filter { film -> film.genre1.toString() == searchItem || film.genre2?.toString() == searchItem }
                     else -> emptyList()
                 }
@@ -183,7 +201,7 @@ fun SearchTextField(
         label = { Text(text = label, fontStyle = FontStyle.Italic) },
         leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
         trailingIcon = {
-            IconButton(onClick = { focusManager.clearFocus() ; onClearTap() }) {
+            IconButton(onClick = { focusManager.clearFocus(); onClearTap() }) {
                 Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon")
             }
         })
@@ -211,19 +229,22 @@ fun FilmRow(
     val showEditDialog = remember { mutableStateOf(false) }
 
     if (showEditDialog.value) {
-        EditAlertDialog(onDismiss = { showEditDialog.value = false },
+        EditAlertDialog(
+            onDismiss = { showEditDialog.value = false },
             onConfirm = { editFilm(film); showEditDialog.value = false },
             filmName = film.title
         )
     }
 
-    Box(modifier = modifier
-        .padding(horizontal = 24.dp)
-        .background(color = MaterialTheme.colorScheme.surfaceVariant)
-        .fillMaxWidth()
-        .combinedClickable(onClick = { onFilmTap(film) },
-            onDoubleClick = { showDeleteDialog.value = true },
-            onLongClick = { showEditDialog.value = true })) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = 24.dp)
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+            .fillMaxWidth()
+            .combinedClickable(onClick = { onFilmTap(film) },
+                onDoubleClick = { showDeleteDialog.value = true },
+                onLongClick = { showEditDialog.value = true })
+    ) {
         Row {
             Spacer(modifier = modifier.padding(4.dp))
             Image(

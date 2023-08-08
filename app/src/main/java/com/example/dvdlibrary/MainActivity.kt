@@ -58,65 +58,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//@Composable
-//fun DvdApp() {
-//    var currentScreen by remember { mutableStateOf<Screen>(Intro) }
-//    val appContext = LocalContext.current.applicationContext
-//    val database by remember {
-//        mutableStateOf(
-//            Room.databaseBuilder(
-//                appContext,
-//                DvdAppDatabase::class.java,
-//                "database-name"
-//            ).build()
-//        )
-//    }
-//    val coroutineScope = rememberCoroutineScope()
-//    val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
-//    val showDialogState = remember { mutableStateOf(false) }
-//
-//
-//    when (val cs = currentScreen) {
-//        Intro -> IntroScreen(
-//            films = films.sortedBy(Film::title),
-//            onAddBtnTap = { currentScreen = Add },
-//            onFilmTap = { film -> currentScreen = Details(film) },
-//            removeFilm = { coroutineScope.launch { database.filmsDao().delete(it) } }
-//        )
-//
-//        Add -> AddScreen(onFilmEntered = { newFilm ->
-//
-//            val isFilmDuplicate = existingFilm(films, newFilm)
-//            if (!isFilmDuplicate) {
-//                coroutineScope.launch {
-//                    database.filmsDao().insertFilm(newFilm)
-//                    currentScreen = Intro
-//                }
-//            } else {
-//                showDialogState.value = true
-//            }
-//        }, backButton = { currentScreen = Intro }, showDialogState = showDialogState
-//        )
-//
-//        is Details -> FilmScreen(cs.film, onReturnTap = { currentScreen = Intro })
-//    }
-//}
-//
-//fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
-//    return filmList.any { existingFilm ->
-//        existingFilm.title == newFilm.title && existingFilm.year == newFilm.year
-//    }
-//}
-//
-//
-//sealed class Screen {
-//    object Intro : Screen
-//    object Add : Screen
-//    class Details(val film: Film) : Screen
-//}
-
-
 sealed class Screen(val route: String) {
     object Intro : Screen("intro")
     object Add : Screen("add")
@@ -125,11 +66,8 @@ sealed class Screen(val route: String) {
 
 }
 
-
 @Composable
 fun DvdApp() {
-
-
     val appContext = LocalContext.current
     val database by remember {
         mutableStateOf(
@@ -224,14 +162,16 @@ fun DvdApp() {
                         modifier = Modifier
                             .fillMaxSize(), contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(150.dp), strokeWidth = 8.dp)
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(150.dp),
+                            strokeWidth = 8.dp
+                        )
                     }
                 }
             }
         }
     }
 }
-
 
 fun existingFilm(filmList: List<Film>, newFilm: Film): Boolean {
     return filmList.any { existingFilm ->
