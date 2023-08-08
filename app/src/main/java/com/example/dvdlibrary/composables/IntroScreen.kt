@@ -58,8 +58,10 @@ fun IntroScreen(
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
-    currentSortItem: Int, // Add currentSortItem parameter
-    updateSortItem: (Int) -> Unit, // Add updateSortItem callback
+    currentSortItem: Int,
+    updateSortItem: (Int) -> Unit,
+    sortOrder: Int,
+    updateSortOrder: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
@@ -68,7 +70,6 @@ fun IntroScreen(
     var currentFilterItem by remember { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
-    var sortOrder by remember { mutableStateOf(0) }
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
@@ -76,19 +77,20 @@ fun IntroScreen(
         ) {
             Row {
                 Box {
-                    if (sortOrder == 0) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_sort_arrow_up),
-                            contentDescription = "Ascending Order",
-                            modifier = Modifier.padding(top = 8.dp).size(30.dp).clickable { sortOrder = 1 }
-                        )
+                    val isCurrentSortOrder: Boolean = 0 == sortOrder
+                    val iconRes = if (isCurrentSortOrder) {
+                        R.drawable.ic_sort_arrow_up
                     } else {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_sort_arrow_down),
-                            contentDescription = "Descending Order",
-                            modifier = Modifier.padding(top = 8.dp).size(30.dp).clickable { sortOrder = 0 }
-                        )
+                        R.drawable.ic_sort_arrow_down
                     }
+                    Icon(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = if (isCurrentSortOrder) "Ascending Order" else "Descending Order",
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(30.dp)
+                            .clickable { updateSortOrder(if (isCurrentSortOrder) 1 else 0) }
+                    )
 
                     Icon(painter = painterResource(R.drawable.ic_sort),
                         contentDescription = "Sort Button",
