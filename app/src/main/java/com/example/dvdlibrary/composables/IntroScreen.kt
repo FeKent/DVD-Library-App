@@ -133,7 +133,7 @@ fun IntroScreen(
                 val filmFilters = when (currentFilterItem){
                     0 -> films.filter { film -> film.title.lowercase().contains(searchItem.lowercase()) }
                     1 -> films.filter { film -> film.year.toString() == searchItem }
-                    2 -> films.filter { film -> film.starring.contains(searchItem) }
+                    2 -> films.filter { film -> film.starring.lowercase().contains(searchItem.lowercase()) }
                     3 -> films.filter { film -> film.genre1.toString() == searchItem || film.genre2?.toString() == searchItem }
                     else -> emptyList()
                 }
