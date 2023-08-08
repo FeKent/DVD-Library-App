@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -160,17 +161,24 @@ fun IntroScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                val filmFilters = when (currentFilterItem) {
+                val filmFilters: List<Film> = when (currentFilterItem) {
                     0 -> films.filter { film ->
                         film.title.lowercase().contains(searchItem.lowercase())
                     }
 
-                    1 -> films.filter { film -> film.year.toString() == searchItem }
+                    1 -> films.filter { film -> film.year.toString().contains(searchItem) }
                     2 -> films.filter { film ->
                         film.starring.lowercase().contains(searchItem.lowercase())
                     }
 
-                    3 -> films.filter { film -> film.genre1.toString() == searchItem || film.genre2?.toString() == searchItem }
+                    3 -> films.filter { film ->
+                        film.genre1.printName.lowercase()
+                            .contains(searchItem.lowercase()) || (film.genre2?.printName?.lowercase()
+                            ?.contains(
+                                searchItem.lowercase()
+                            ) ?: film.genre2?.toString()) == searchItem
+                    }
+
                     else -> emptyList()
                 }
 
@@ -212,7 +220,7 @@ fun SearchTextField(
         onValueChange = { onSearchTermChange(it) },
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
+            keyboardType = KeyboardType.Text, imeAction = ImeAction.Search, capitalization = KeyboardCapitalization.Words
         ),
         singleLine = true,
         modifier = modifier,
