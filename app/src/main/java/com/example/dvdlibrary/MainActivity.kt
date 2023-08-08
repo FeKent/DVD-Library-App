@@ -86,7 +86,7 @@ fun DvdApp() {
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
-            val films = when (currentSortItemState) {
+            val filmSorted = when (currentSortItemState) {
                 0 -> films.sortedBy { it.title }
                 1 -> films.sortedBy { it.genre1 }
                 2 -> films.sortedBy { it.year }
@@ -94,7 +94,7 @@ fun DvdApp() {
                 else -> films.sortedBy { it.title }
             }
             IntroScreen(
-                films = films,
+                films = filmSorted,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
                 removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
