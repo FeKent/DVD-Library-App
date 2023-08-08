@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -58,12 +59,13 @@ fun IntroScreen(
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
+    currentSortItem: Int, // Add currentSortItem parameter
+    updateSortItem: (Int) -> Unit, // Add updateSortItem callback
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime")
     val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
-    var currentSortItem by remember { mutableStateOf(0) }
     var currentFilterItem by remember { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
@@ -85,21 +87,19 @@ fun IntroScreen(
                         expanded = expandedSort,
                         onDismissRequest = { expandedSort = false }) {
                         sortItems.forEachIndexed { itemIndex, itemValue ->
+                            val isCurrentSortItem = itemIndex == currentSortItem
                             DropdownMenuItem(
                                 text = { Text(text = itemValue) },
-                                onClick = { currentSortItem = itemIndex; expandedSort = false },
-                                enabled = (itemIndex != currentSortItem)
+                                onClick = {
+                                    if (!isCurrentSortItem) {
+                                        updateSortItem(itemIndex)
+                                    }
+                                    expandedSort = false
+                                },
+                                enabled = !isCurrentSortItem
                             )
                         }
                     }
-
-                    val sortMetric: String = when (currentSortItem) {
-                        0 -> "Film::title"
-                        1 -> "Film::genre1"
-                        2 -> "Film::year"
-                        else -> "Film::runtime"
-                    }
-
                 }
 
                 SearchTextField(
@@ -275,6 +275,3 @@ fun FilmRow(
         Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
     }
 }
-
-
-
