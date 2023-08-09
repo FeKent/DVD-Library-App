@@ -88,7 +88,7 @@ fun DvdApp() {
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
             val filmSorted = when (currentSortItemState) {
-                0 -> if (sortOrder == 0) films.sortedBy { it.title } else films.sortedByDescending { it.title }
+                0 -> if (sortOrder == 0) films.sortedBy { it.title.removePrefix("The ") } else films.sortedByDescending { it.title.removePrefix("The ") }
                 1 -> if (sortOrder == 0) films.sortedWith(compareBy({ it.genre1 } , {it.genre2})) else films.sortedWith(compareBy<Film>({ it.genre1 } , {it.genre2}).reversed())
                 2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
                 3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
