@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -64,6 +65,7 @@ fun IntroScreen(
     updateSortItem: (Int) -> Unit,
     sortOrder: Int,
     updateSortOrder: (Int) -> Unit,
+    databaseItemCounter: Int,
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
@@ -197,6 +199,12 @@ fun IntroScreen(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }))
+            Spacer(modifier = Modifier.height(8.dp))
+            Row {
+                Text(text = "Films in Library:", fontStyle = FontStyle.Italic)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "$databaseItemCounter", fontWeight = FontWeight.Bold)
+            }
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

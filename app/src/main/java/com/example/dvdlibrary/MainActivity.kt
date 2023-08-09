@@ -103,7 +103,8 @@ fun DvdApp() {
                 currentSortItem = currentSortItemState,
                 updateSortItem = { newItem -> currentSortItemState = newItem },
                 sortOrder = sortOrder,
-                updateSortOrder = {newItem -> sortOrder = newItem}
+                updateSortOrder = {newItem -> sortOrder = newItem},
+                databaseItemCounter = films.size
             )
         }
 
