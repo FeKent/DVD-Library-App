@@ -174,10 +174,10 @@ fun IntroScreen(
                     }
 
                     3 -> films.filter { film ->
-                        film.genre1.printName.lowercase().contains(searchItem.lowercase()) ||
-                                film.genre2!!.printName.lowercase().contains(searchItem.lowercase())
+                        val genre1Matches = film.genre1.printName.lowercase().contains(searchItem.lowercase())
+                        val genre2Matches = film.genre2?.printName?.lowercase()?.contains(searchItem.lowercase()) ?: false
+                        genre1Matches || genre2Matches
                     }
-
                     else -> emptyList()
                 }
 
