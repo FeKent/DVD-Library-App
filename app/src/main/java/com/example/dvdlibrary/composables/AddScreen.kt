@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import kotlin.math.abs
 
 @Composable
 fun AddScreen(
@@ -127,7 +128,12 @@ fun AddScreen(
                                     year
                                 )
                             }
-                            val movies = response.results
+                            val movies = response.results.sortedBy {
+                                val resultYearInt = it.release_date?.take(4)?.toInt()
+                                val defaultYear = (Int.MAX_VALUE / 2)
+                                val distanceFromInputYear = abs((resultYearInt ?: defaultYear)-year.toInt())
+                                distanceFromInputYear
+                            }
                             val posterUrl = if (movies.isNotEmpty()) {
                                 val firstMovie = movies[0]
                                 Log.d("poster path", firstMovie.poster_path.toString())
