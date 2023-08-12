@@ -52,6 +52,7 @@ fun AddScreen(
     navigateBack: () -> Unit,
     showDialogState: MutableState<Boolean>,
     modifier: Modifier = Modifier,
+    filmToEdit: Film? = null,
 ) {
     val showValidLogState = remember { mutableStateOf(false) }
     val validationLabel = remember { mutableStateOf("") }
@@ -60,12 +61,15 @@ fun AddScreen(
     val apiKey =
         "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
 
-    var title by remember { mutableStateOf("") }
-    var runTime by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
-    var starring by remember { mutableStateOf("") }
-    var genre by remember { mutableStateOf(Genre.Action) }
-    var genre2: Genre? by remember { mutableStateOf(null) }
+    val isEditMode = filmToEdit != null
+
+    var title by remember { mutableStateOf(filmToEdit?.title ?: "") }
+    var runTime by remember { mutableStateOf(filmToEdit?.runtime?.toString() ?: "") }
+    var year by remember { mutableStateOf(filmToEdit?.year?.toString() ?: "") }
+    var starring by remember { mutableStateOf(filmToEdit?.starring ?: "") }
+    var genre by remember { mutableStateOf(filmToEdit?.genre1 ?: Genre.Action) }
+    var genre2: Genre? by remember { mutableStateOf(filmToEdit?.genre2) }
+
 
     Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
@@ -75,7 +79,11 @@ fun AddScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "Add Film Details", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                text = "${if (isEditMode) "Edit" else "Add"} Film Details",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.SemiBold
+            )
             Spacer(modifier = Modifier.padding(32.dp))
             AddTextField(
                 label = "Title",
@@ -110,7 +118,8 @@ fun AddScreen(
             AddGenre2Field(
                 label = "Optional Genre",
                 selectedItem = genre2,
-                onGenreSelected = { genre2 = it }, modifier = Modifier.fillMaxWidth()
+                onGenreSelected = { genre2 = it },
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.padding(24.dp))
             Row {
@@ -118,69 +127,148 @@ fun AddScreen(
                     navigateBack()
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-                AddFilms(onSaveTap = {
-                    posterScope.launch {
-                        try {
-                            val response = withContext(coroutineContext) {
-                                TmdbApi.service.getPosters(
-                                    "Bearer $apiKey",
-                                    title,
-                                    year
-                                )
-                            }
-                            val movies = response.results.sortedBy {
-                                val resultYearInt = it.release_date?.take(4)?.toInt()
-                                val defaultYear = (Int.MAX_VALUE / 2)
-                                val distanceFromInputYear = abs((resultYearInt ?: defaultYear)-year.toInt())
-                                distanceFromInputYear
-                            }
-                            val posterUrl = if (movies.isNotEmpty()) {
-                                val firstMovie = movies[0]
-                                Log.d("poster path", firstMovie.poster_path.toString())
-                                if (firstMovie.poster_path != null) {
-                                    firstMovie.poster_path.toString()
+                if (isEditMode) {
+                    EditFilms(onEditSaveTap = {
+                        posterScope.launch {
+                            try {
+                                val response = withContext(coroutineContext) {
+                                    TmdbApi.service.getPosters(
+                                        "Bearer $apiKey", title, year
+                                    )
+                                }
+                                val movies = response.results.sortedBy {
+                                    val resultYearInt = it.release_date?.take(4)?.toInt()
+                                    val defaultYear = (Int.MAX_VALUE / 2)
+                                    val distanceFromInputYear =
+                                        abs((resultYearInt ?: defaultYear) - year.toInt())
+                                    distanceFromInputYear
+                                }
+                                val editPosterUrl = if (movies.isNotEmpty()) {
+                                    val firstMovie = movies[0]
+                                    Log.d("poster path", firstMovie.poster_path.toString())
+                                    if (firstMovie.poster_path != null) {
+                                        firstMovie.poster_path.toString()
+                                    } else {
+                                        ""
+                                    }
                                 } else {
                                     ""
                                 }
-                            } else {
-                                ""
-                            }
-                            val getOverview = if (movies.isNotEmpty()) {
-                                val beginningMovie = movies[0]
-                                Log.d("overview", beginningMovie.overview.toString())
-                                if (beginningMovie.overview != null) {
-                                    beginningMovie.overview.toString()
+                                val getEditOverview = if (movies.isNotEmpty()) {
+                                    val beginningMovie = movies[0]
+                                    Log.d("overview", beginningMovie.overview.toString())
+                                    if (beginningMovie.overview != null) {
+                                        beginningMovie.overview.toString()
+                                    } else {
+                                        ""
+                                    }
                                 } else {
                                     ""
                                 }
-                            } else {
-                                ""
-                            }
 
 
-                            val yearIsValid: Boolean = try {
-                                val intYear = year.toInt()
-                                intYear > 1900 && intYear < LocalDate.now().year + 1
+                                val yearIsValid: Boolean = try {
+                                    val intYear = year.toInt()
+                                    intYear > 1900 && intYear < LocalDate.now().year + 1
+                                } catch (e: Exception) {
+                                    false
+                                }
+
+                                if (runTime.isEmpty()) {
+                                    validationLabel.value = "Runtime"
+                                } else if (title.isEmpty()) {
+                                    validationLabel.value = "Title"
+                                } else if (starring.isEmpty()) {
+                                    validationLabel.value = "Starring"
+                                } else if (!yearIsValid) {
+                                    validationLabel.value = "Year"
+                                }
+
+                                if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
+                                    showValidLogState.value = true
+                                    return@launch
+                                }
+                        val editedFilm = Film(
+                            id = filmToEdit!!.id,
+                            runtime = runTime.toInt(),
+                            title = title,
+                            poster_path = editPosterUrl,
+                            overview = getEditOverview,
+                            description = "",
+                            year = year.toInt(),
+                            starring = starring,
+                            genre1 = genre,
+                            genre2 = genre2,
+                        )
+                        onFilmEntered(editedFilm)
                             } catch (e: Exception) {
-                                false
+                                println("Error occurred while making API request: ${e.localizedMessage}")
+                                println("Error occurred while making API request: ${e.cause}")
                             }
+                        }
+                    })
+                } else {
+                    AddFilms(onSaveTap = {
+                        posterScope.launch {
+                            try {
+                                val response = withContext(coroutineContext) {
+                                    TmdbApi.service.getPosters(
+                                        "Bearer $apiKey", title, year
+                                    )
+                                }
+                                val movies = response.results.sortedBy {
+                                    val resultYearInt = it.release_date?.take(4)?.toInt()
+                                    val defaultYear = (Int.MAX_VALUE / 2)
+                                    val distanceFromInputYear =
+                                        abs((resultYearInt ?: defaultYear) - year.toInt())
+                                    distanceFromInputYear
+                                }
+                                val posterUrl = if (movies.isNotEmpty()) {
+                                    val firstMovie = movies[0]
+                                    Log.d("poster path", firstMovie.poster_path.toString())
+                                    if (firstMovie.poster_path != null) {
+                                        firstMovie.poster_path.toString()
+                                    } else {
+                                        ""
+                                    }
+                                } else {
+                                    ""
+                                }
+                                val getOverview = if (movies.isNotEmpty()) {
+                                    val beginningMovie = movies[0]
+                                    Log.d("overview", beginningMovie.overview.toString())
+                                    if (beginningMovie.overview != null) {
+                                        beginningMovie.overview.toString()
+                                    } else {
+                                        ""
+                                    }
+                                } else {
+                                    ""
+                                }
 
-                            if (runTime.isEmpty()) {
-                                validationLabel.value = "Runtime"
-                            } else if (title.isEmpty()) {
-                                validationLabel.value = "Title"
-                            } else if (starring.isEmpty()) {
-                                validationLabel.value = "Starring"
-                            } else if (!yearIsValid) {
-                                validationLabel.value = "Year"
-                            }
 
-                            if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
-                                showValidLogState.value = true
-                                return@launch
-                            }
-                            onFilmEntered(
-                                Film(
+                                val yearIsValid: Boolean = try {
+                                    val intYear = year.toInt()
+                                    intYear > 1900 && intYear < LocalDate.now().year + 1
+                                } catch (e: Exception) {
+                                    false
+                                }
+
+                                if (runTime.isEmpty()) {
+                                    validationLabel.value = "Runtime"
+                                } else if (title.isEmpty()) {
+                                    validationLabel.value = "Title"
+                                } else if (starring.isEmpty()) {
+                                    validationLabel.value = "Starring"
+                                } else if (!yearIsValid) {
+                                    validationLabel.value = "Year"
+                                }
+
+                                if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
+                                    showValidLogState.value = true
+                                    return@launch
+                                }
+                                val newFilm = Film(
                                     id = 0,
                                     runTime.toInt(),
                                     title,
@@ -192,20 +280,19 @@ fun AddScreen(
                                     genre,
                                     genre2,
                                 )
-                            )
-                        } catch (e: Exception) {
-                            println("Error occurred while making API request: ${e.localizedMessage}")
-                            println("Error occurred while making API request: ${e.cause}")
+                                onFilmEntered(newFilm)
+                            } catch (e: Exception) {
+                                println("Error occurred while making API request: ${e.localizedMessage}")
+                                println("Error occurred while making API request: ${e.cause}")
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
 
             if (showValidLogState.value) {
-                ValidationDialog(
-                    label = validationLabel.value,
-                    onDismiss = { showValidLogState.value = false }
-                )
+                ValidationDialog(label = validationLabel.value,
+                    onDismiss = { showValidLogState.value = false })
             }
 
             if (showDialogState.value) {
@@ -231,14 +318,12 @@ fun AddTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextField(
-        value = value,
+    TextField(value = value,
         onValueChange = { onValueChange(it) },
         singleLine = true,
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next,
-            capitalization = KeyboardCapitalization.Words
+            imeAction = ImeAction.Next, capitalization = KeyboardCapitalization.Words
         ),
         modifier = modifier
     )
@@ -251,8 +336,7 @@ fun AddNumField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextField(
-        value = value,
+    TextField(value = value,
         onValueChange = { onValueChange(it) },
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
@@ -275,9 +359,7 @@ fun AddGenre1Field(
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
+        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
     ) {
         TextField(
             modifier = Modifier
@@ -296,13 +378,10 @@ fun AddGenre1Field(
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             Genre.values().forEach { option ->
-                DropdownMenuItem(
-                    { Text(text = option.printName) },
-                    onClick = {
-                        onGenreSelected(option)
-                        expanded = false
-                    }
-                )
+                DropdownMenuItem({ Text(text = option.printName) }, onClick = {
+                    onGenreSelected(option)
+                    expanded = false
+                })
             }
         }
     }
@@ -320,9 +399,7 @@ fun AddGenre2Field(
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
+        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
     ) {
         TextField(
             modifier = Modifier
@@ -340,21 +417,15 @@ fun AddGenre2Field(
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                { Text(text = "No Genre Selected") },
-                onClick = {
-                    onGenreSelected(null)
-                    expanded = false
-                }
-            )
+            DropdownMenuItem({ Text(text = "No Genre Selected") }, onClick = {
+                onGenreSelected(null)
+                expanded = false
+            })
             Genre.values().forEach { option ->
-                DropdownMenuItem(
-                    { Text(text = option.printName) },
-                    onClick = {
-                        onGenreSelected(option)
-                        expanded = false
-                    }
-                )
+                DropdownMenuItem({ Text(text = option.printName) }, onClick = {
+                    onGenreSelected(option)
+                    expanded = false
+                })
             }
         }
     }
@@ -378,6 +449,17 @@ fun BackButton(onBackTap: () -> Unit) {
         Icon(
             painter = painterResource(R.drawable.ic_back),
             contentDescription = "Back Button",
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+    }))
+}
+
+@Composable
+fun EditFilms(onEditSaveTap: () -> Unit) {
+    FloatingActionButton(onClick = { onEditSaveTap() }, content = ({
+        Icon(
+            painter = painterResource(R.drawable.ic_add),
+            contentDescription = "Save Button",
             tint = MaterialTheme.colorScheme.onBackground
         )
     }))

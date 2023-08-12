@@ -28,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.dvdlibrary.composables.AddScreen
-import com.example.dvdlibrary.composables.EditScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
@@ -109,7 +108,7 @@ fun DvdApp() {
         }
 
         composable(Screen.Add.route) {
-            AddScreen(
+            AddScreen( filmToEdit = null,
                 onFilmEntered = { newFilm ->
                     val isFilmDuplicate = existingFilm(films, newFilm)
                     if (!isFilmDuplicate) {
@@ -133,26 +132,24 @@ fun DvdApp() {
             if (filmId != null) {
                 var film: Film? by remember { mutableStateOf(null) }
 
-                LaunchedEffect(key1 = Unit) {
+                LaunchedEffect(key1 = filmId) {
                     film = database.filmsDao().getFilm(filmId)
                 }
 
-                film?.let {
-                    EditScreen(
-                        filmName = it.title,
-                        editDetails = it,
-                        navigateBack = { navController.popBackStack() },
-                        onFilmEdited = {
+                film?.let { editedFilm ->
+                    AddScreen(
+                        filmToEdit = editedFilm,
+                        onFilmEntered = { updatedFilm ->
                             coroutineScope.launch {
-                                database.filmsDao().editFilm(it)
+                                database.filmsDao().editFilm(updatedFilm)
                                 navController.popBackStack()
                             }
-                        }
+                        },
+                        navigateBack = { navController.popBackStack() },
+                        showDialogState = showDialogState
                     )
                 }
-
             }
-
         }
 
         composable(
