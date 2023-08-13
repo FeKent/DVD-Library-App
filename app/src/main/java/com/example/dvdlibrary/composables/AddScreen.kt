@@ -1,6 +1,8 @@
 package com.example.dvdlibrary.composables
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -56,7 +59,7 @@ fun AddScreen(
 ) {
     val showValidLogState = remember { mutableStateOf(false) }
     val validationLabel = remember { mutableStateOf("") }
-
+    val mContext = LocalContext.current
     val posterScope = CoroutineScope(Dispatchers.Main)
     val apiKey =
         "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
@@ -280,6 +283,9 @@ fun AddScreen(
                                 )
                                 onFilmEntered(newFilm)
                             } catch (e: Exception) {
+
+                                Toast.makeText(mContext, "Error With API; Try Another Film", Toast.LENGTH_SHORT).show()
+
                                 println("Error occurred while making API request: ${e.printStackTrace()}")
                                 println("Error occurred while making API request: ${e.cause} issue one")
                             }
