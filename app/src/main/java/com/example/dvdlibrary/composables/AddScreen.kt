@@ -216,6 +216,9 @@ fun AddScreen(
                                         "Bearer $apiKey", title, year
                                     )
                                 }
+
+                                Log.d("API Response", response.toString())
+
                                 val movies = response.results.sortedBy {
                                     val resultYearInt = it.release_date?.take(4)?.toInt()
                                     val defaultYear = (Int.MAX_VALUE / 2)
@@ -223,25 +226,20 @@ fun AddScreen(
                                         abs((resultYearInt ?: defaultYear) - year.toInt())
                                     distanceFromInputYear
                                 }
+
+
                                 val posterUrl = if (movies.isNotEmpty()) {
                                     val firstMovie = movies[0]
-                                    Log.d("poster path", firstMovie.poster_path.toString())
-                                    if (firstMovie.poster_path != null) {
-                                        firstMovie.poster_path.toString()
-                                    } else {
-                                        ""
-                                    }
+                                    firstMovie.poster_path.toString()
+                                    firstMovie.poster_path ?: ""
                                 } else {
                                     ""
                                 }
+
                                 val getOverview = if (movies.isNotEmpty()) {
                                     val beginningMovie = movies[0]
-                                    Log.d("overview", beginningMovie.overview.toString())
-                                    if (beginningMovie.overview != null) {
-                                        beginningMovie.overview.toString()
-                                    } else {
-                                        ""
-                                    }
+                                    beginningMovie.overview.toString()
+                                    beginningMovie.overview ?: ""
                                 } else {
                                     ""
                                 }
@@ -268,7 +266,7 @@ fun AddScreen(
                                     showValidLogState.value = true
                                     return@launch
                                 }
-                                val newFilm = Film(
+                        val newFilm = Film(
                                     id = 0,
                                     runTime.toInt(),
                                     title,
@@ -282,8 +280,8 @@ fun AddScreen(
                                 )
                                 onFilmEntered(newFilm)
                             } catch (e: Exception) {
-                                println("Error occurred while making API request: ${e.localizedMessage}")
-                                println("Error occurred while making API request: ${e.cause}")
+                                println("Error occurred while making API request: ${e.printStackTrace()}")
+                                println("Error occurred while making API request: ${e.cause} issue one")
                             }
                         }
                     })
