@@ -12,7 +12,8 @@ data class TmdbMoviePosterSearchResult(
     val title: String?,
     val poster_path: String?,
     val overview: String?,
-    val release_date: String?
+    val release_date: String?,
+    val media_type: String?
 )
 
 

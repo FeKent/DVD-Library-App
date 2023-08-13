@@ -138,7 +138,11 @@ fun AddScreen(
                                         "Bearer $apiKey", title, year
                                     )
                                 }
-                                val movies = response.results.sortedBy {
+                                val mediaMovies = response.results.filter { it.media_type.equals("movie") }
+                                val mediaTv = response.results.filter { it.media_type.equals("tv") }
+
+                                val movies =
+                                    mediaMovies + mediaTv.sortedBy {
                                     val resultYearInt = it.release_date?.take(4)?.toInt()
                                     val defaultYear = (Int.MAX_VALUE / 2)
                                     val distanceFromInputYear =
@@ -219,15 +223,18 @@ fun AddScreen(
                                     )
                                 }
 
-                                Log.d("API Response", response.toString())
+                                val mediaMovies = response.results.filter { it.media_type.equals("movie") }
+                                val mediaTv = response.results.filter { it.media_type.equals("tv") }
 
-                                val movies = response.results.sortedBy {
-                                    val resultYearInt = it.release_date?.take(4)?.toInt()
-                                    val defaultYear = (Int.MAX_VALUE / 2)
-                                    val distanceFromInputYear =
-                                        abs((resultYearInt ?: defaultYear) - year.toInt())
-                                    distanceFromInputYear
-                                }
+                                val movies =
+                                    mediaMovies + mediaTv
+                                        .sortedBy {
+                                            val resultYearInt = it.release_date?.take(4)?.toInt()
+                                            val defaultYear = (Int.MAX_VALUE / 2)
+                                            val distanceFromInputYear =
+                                                abs((resultYearInt ?: defaultYear) - year.toInt())
+                                            distanceFromInputYear
+                                        }
 
 
                                 val posterUrl = if (movies.isNotEmpty()) {
