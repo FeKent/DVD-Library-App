@@ -190,19 +190,19 @@ fun AddScreen(
                                     showValidLogState.value = true
                                     return@launch
                                 }
-                        val editedFilm = Film(
-                            id = filmToEdit!!.id,
-                            runtime = runTime.toInt(),
-                            title = title,
-                            poster_path = editPosterUrl,
-                            overview = getEditOverview,
-                            description = "",
-                            year = year.toInt(),
-                            starring = starring,
-                            genre1 = genre,
-                            genre2 = genre2,
-                        )
-                        onFilmEntered(editedFilm)
+                                val editedFilm = Film(
+                                    id = filmToEdit!!.id,
+                                    runtime = runTime.toInt(),
+                                    title = title,
+                                    poster_path = editPosterUrl,
+                                    overview = getEditOverview,
+                                    description = "",
+                                    year = year.toInt(),
+                                    starring = starring,
+                                    genre1 = genre,
+                                    genre2 = genre2,
+                                )
+                                onFilmEntered(editedFilm)
                             } catch (e: Exception) {
                                 println("Error occurred while making API request: ${e.localizedMessage}")
                                 println("Error occurred while making API request: ${e.cause}")
@@ -268,7 +268,7 @@ fun AddScreen(
                                     showValidLogState.value = true
                                     return@launch
                                 }
-                        val newFilm = Film(
+                                val newFilm = Film(
                                     id = 0,
                                     runTime.toInt(),
                                     title,
@@ -283,7 +283,11 @@ fun AddScreen(
                                 onFilmEntered(newFilm)
                             } catch (e: Exception) {
 
-                                Toast.makeText(mContext, "Error With API; Try Another Film", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    mContext,
+                                    "Error With API; Try Another Film",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
                                 println("Error occurred while making API request: ${e.printStackTrace()}")
                                 println("Error occurred while making API request: ${e.cause} issue one")
@@ -321,7 +325,8 @@ fun AddTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextField(value = value,
+    TextField(
+        value = value,
         onValueChange = { onValueChange(it) },
         singleLine = true,
         label = { Text(text = label) },
@@ -339,7 +344,8 @@ fun AddNumField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextField(value = value,
+    TextField(
+        value = value,
         onValueChange = { onValueChange(it) },
         label = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
