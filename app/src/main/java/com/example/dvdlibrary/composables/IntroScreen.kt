@@ -182,9 +182,11 @@ fun IntroScreen(
                 }
 
                 filmFilters
-                    .forEach {
+                    .forEach {currentFilm ->
+                        val filmsWithTitle = filmFilters.filter { it.title == currentFilm.title }
                         FilmRow(
-                            film = it,
+                            film = currentFilm,
+                            filmsWithTitle = filmsWithTitle,
                             onFilmTap = onFilmTap,
                             removeFilm = removeFilm,
                             editFilm = editFilm
@@ -244,6 +246,7 @@ fun SearchTextField(
 @Composable
 fun FilmRow(
     film: Film,
+    filmsWithTitle: List<Film>,
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
     editFilm: (Film) -> Unit,
@@ -269,6 +272,12 @@ fun FilmRow(
         )
     }
 
+    val displayTitle = if (filmsWithTitle.count { it.title == film.title } > 1) {
+        "${film.title} (${film.year})"
+    } else {
+        film.title
+    }
+
     Box(
         modifier = modifier
             .padding(horizontal = 24.dp)
@@ -288,7 +297,7 @@ fun FilmRow(
                     .width(24.dp)
             )
             Text(
-                text = film.title,
+                text = displayTitle,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Justify,
                 modifier = Modifier
