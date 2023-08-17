@@ -33,7 +33,10 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 
 class MainActivity : ComponentActivity() {
