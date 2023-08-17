@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,6 +34,7 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
+import com.example.dvdlibrary.viewmodels.AppViewModel
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,17 +72,10 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun DvdApp() {
+    val viewModel: AppViewModel by viewModel()
     val appContext = LocalContext.current
-    val database by remember {
-        mutableStateOf(
-            Room.databaseBuilder(
-                appContext,
-                DvdAppDatabase::class.java,
-                "database-name"
-            ).build()
-        )
-    }
-    val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
+    val films by viewModel.films(appContext).collectAsStateWithLifecycle(initialValue = emptyList())
+
     val coroutineScope = rememberCoroutineScope()
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
@@ -100,7 +95,7 @@ fun DvdApp() {
                 films = filmSorted,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
+                removeFilm = { film -> coroutineScope.launch { viewModel.deleteFilm(appContext, film)} },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
                 updateSortItem = { newItem -> currentSortItemState = newItem },
