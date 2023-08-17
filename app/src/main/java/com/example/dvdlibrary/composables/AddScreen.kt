@@ -1,6 +1,5 @@
 package com.example.dvdlibrary.composables
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -130,7 +129,7 @@ fun AddScreen(
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
 
-                AddFilms(onSaveTap = {
+                SaveFilm(onSaveTap = {
                     posterScope.launch {
                         try {
                             val response = withContext(coroutineContext) {
@@ -365,7 +364,7 @@ fun AddGenre2Field(
 
 
 @Composable
-fun AddFilms(onSaveTap: () -> Unit) {
+fun SaveFilm(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
