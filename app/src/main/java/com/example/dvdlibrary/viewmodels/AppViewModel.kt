@@ -25,4 +25,15 @@ class AppViewModel : ViewModel() {
         return database(context).filmsDao().delete(film)
     }
 
+    suspend fun insertFilm(context: Context, film: Film){
+        return database(context).filmsDao().insertFilm(film)
+    }
+
+    suspend fun getFilm(context: Context, filmId: Int): Film {
+        return database(context).filmsDao().getFilm(filmId)
+    }
+
+    suspend fun editFilm(context: Context, film: Film){
+        return database(context).filmsDao().editFilm(film)
+    }
 }

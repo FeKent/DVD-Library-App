@@ -27,18 +27,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.room.Room
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
-import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import com.example.dvdlibrary.viewmodels.AppViewModel
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
 
 
 class MainActivity : ComponentActivity() {
@@ -111,7 +106,7 @@ fun DvdApp() {
                     val isFilmDuplicate = existingFilm(films, newFilm)
                     if (!isFilmDuplicate) {
                         coroutineScope.launch {
-                            database.filmsDao().insertFilm(newFilm)
+                            viewModel.insertFilm(appContext, newFilm)
                             navController.popBackStack()
                         }
                     } else {
@@ -131,7 +126,7 @@ fun DvdApp() {
                 var film: Film? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(key1 = filmId) {
-                    film = database.filmsDao().getFilm(filmId)
+                    film = viewModel.getFilm(appContext, filmId)
                 }
 
                 film?.let { editedFilm ->
@@ -139,7 +134,7 @@ fun DvdApp() {
                         filmToEdit = editedFilm,
                         onFilmEntered = { updatedFilm ->
                             coroutineScope.launch {
-                                database.filmsDao().editFilm(updatedFilm)
+                                viewModel.editFilm(appContext, updatedFilm)
                                 navController.popBackStack()
                             }
                         },
@@ -159,7 +154,7 @@ fun DvdApp() {
                 var film: Film? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(key1 = Unit) {
-                    film = database.filmsDao().getFilm(filmId)
+                    film = viewModel.getFilm(appContext, filmId)
                 }
 
                 film?.let {
