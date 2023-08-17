@@ -21,18 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.room.Room
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
 import com.example.dvdlibrary.composables.IntroScreen
-import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
+import com.example.dvdlibrary.viewmodels.AppViewModel
 import kotlinx.coroutines.launch
 
 
@@ -67,17 +67,10 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun DvdApp() {
+    val viewModel: AppViewModel by viewModel()
     val appContext = LocalContext.current
-    val database by remember {
-        mutableStateOf(
-            Room.databaseBuilder(
-                appContext,
-                DvdAppDatabase::class.java,
-                "database-name"
-            ).build()
-        )
-    }
-    val films by database.filmsDao().allFilms().collectAsStateWithLifecycle(emptyList())
+    val films by viewModel.films(appContext).collectAsStateWithLifecycle(initialValue = emptyList())
+
     val coroutineScope = rememberCoroutineScope()
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
@@ -97,7 +90,7 @@ fun DvdApp() {
                 films = filmSorted,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { database.filmsDao().delete(film) } },
+                removeFilm = { film -> coroutineScope.launch { viewModel.deleteFilm(appContext, film)} },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
                 updateSortItem = { newItem -> currentSortItemState = newItem },
@@ -113,7 +106,7 @@ fun DvdApp() {
                     val isFilmDuplicate = existingFilm(films, newFilm)
                     if (!isFilmDuplicate) {
                         coroutineScope.launch {
-                            database.filmsDao().insertFilm(newFilm)
+                            viewModel.insertFilm(appContext, newFilm)
                             navController.popBackStack()
                         }
                     } else {
@@ -133,7 +126,7 @@ fun DvdApp() {
                 var film: Film? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(key1 = filmId) {
-                    film = database.filmsDao().getFilm(filmId)
+                    film = viewModel.getFilm(appContext, filmId)
                 }
 
                 film?.let { editedFilm ->
@@ -141,7 +134,7 @@ fun DvdApp() {
                         filmToEdit = editedFilm,
                         onFilmEntered = { updatedFilm ->
                             coroutineScope.launch {
-                                database.filmsDao().editFilm(updatedFilm)
+                                viewModel.editFilm(appContext, updatedFilm)
                                 navController.popBackStack()
                             }
                         },
@@ -161,7 +154,7 @@ fun DvdApp() {
                 var film: Film? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(key1 = Unit) {
-                    film = database.filmsDao().getFilm(filmId)
+                    film = viewModel.getFilm(appContext, filmId)
                 }
 
                 film?.let {

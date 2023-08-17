@@ -1,6 +1,5 @@
 package com.example.dvdlibrary.composables
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -129,197 +128,113 @@ fun AddScreen(
                     navigateBack()
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 16.dp))
-                if (isEditMode) {
-                    EditFilms(onEditSaveTap = {
-                        posterScope.launch {
-                            try {
-                                val response = withContext(coroutineContext) {
-                                    TmdbApi.service.getPosters(
-                                        "Bearer $apiKey", title, year
-                                    )
-                                }
-                                val mediaMovies = response.results.filter { it.media_type.equals("movie") }
-                                val mediaTv = response.results.filter { it.media_type.equals("tv") }
 
-                                val movies =
-                                    mediaMovies + mediaTv.sortedBy {
-                                    val resultYearInt = it.release_date?.take(4)?.toInt()
-                                    val defaultYear = (Int.MAX_VALUE / 2)
-                                    val distanceFromInputYear =
-                                        abs((resultYearInt ?: defaultYear) - year.toInt())
-                                    distanceFromInputYear
-                                }
-                                val editPosterUrl = if (movies.isNotEmpty()) {
-                                    val firstMovie = movies[0]
-                                    Log.d("poster path", firstMovie.poster_path.toString())
-                                    if (firstMovie.poster_path != null) {
-                                        firstMovie.poster_path.toString()
-                                    } else {
-                                        ""
-                                    }
-                                } else {
-                                    ""
-                                }
-                                val getEditOverview = if (movies.isNotEmpty()) {
-                                    val beginningMovie = movies[0]
-                                    Log.d("overview", beginningMovie.overview.toString())
-                                    if (beginningMovie.overview != null) {
-                                        beginningMovie.overview.toString()
-                                    } else {
-                                        ""
-                                    }
-                                } else {
-                                    ""
-                                }
-
-
-                                val yearIsValid: Boolean = try {
-                                    val intYear = year.toInt()
-                                    intYear > 1900 && intYear < LocalDate.now().year + 1
-                                } catch (e: Exception) {
-                                    false
-                                }
-
-                                if (runTime.isEmpty()) {
-                                    validationLabel.value = "Runtime"
-                                } else if (title.isEmpty()) {
-                                    validationLabel.value = "Title"
-                                } else if (starring.isEmpty()) {
-                                    validationLabel.value = "Starring"
-                                } else if (!yearIsValid) {
-                                    validationLabel.value = "Year"
-                                }
-
-                                if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
-                                    showValidLogState.value = true
-                                    return@launch
-                                }
-                                val editedFilm = Film(
-                                    id = filmToEdit!!.id,
-                                    runtime = runTime.toInt(),
-                                    title = title,
-                                    poster_path = editPosterUrl,
-                                    overview = getEditOverview,
-                                    description = "",
-                                    year = year.toInt(),
-                                    starring = starring,
-                                    genre1 = genre,
-                                    genre2 = genre2,
+                SaveFilm(onSaveTap = {
+                    posterScope.launch {
+                        try {
+                            val response = withContext(coroutineContext) {
+                                TmdbApi.service.getPosters(
+                                    "Bearer $apiKey", title, year
                                 )
-                                onFilmEntered(editedFilm)
-                            } catch (e: Exception) {
-                                println("Error occurred while making API request: ${e.localizedMessage}")
-                                println("Error occurred while making API request: ${e.cause}")
                             }
-                        }
-                    })
-                } else {
-                    AddFilms(onSaveTap = {
-                        posterScope.launch {
-                            try {
-                                val response = withContext(coroutineContext) {
-                                    TmdbApi.service.getPosters(
-                                        "Bearer $apiKey", title, year
-                                    )
-                                }
 
-                                val mediaMovies = response.results.filter { it.media_type.equals("movie") }
-                                val mediaTv = response.results.filter { it.media_type.equals("tv") }
+                            val mediaMovies =
+                                response.results.filter { it.media_type.equals("movie") }
+                            val mediaTv = response.results.filter { it.media_type.equals("tv") }
 
-                                val movies =
-                                    mediaMovies + mediaTv
-                                        .sortedBy {
-                                            val resultYearInt = it.release_date?.take(4)?.toInt()
-                                            val defaultYear = (Int.MAX_VALUE / 2)
-                                            val distanceFromInputYear =
-                                                abs((resultYearInt ?: defaultYear) - year.toInt())
-                                            distanceFromInputYear
-                                        }
+                            val movies =
+                                mediaMovies + mediaTv
+                                    .sortedBy {
+                                        val resultYearInt = it.release_date?.take(4)?.toInt()
+                                        val defaultYear = (Int.MAX_VALUE / 2)
+                                        val distanceFromInputYear =
+                                            abs((resultYearInt ?: defaultYear) - year.toInt())
+                                        distanceFromInputYear
+                                    }
 
 
-                                val posterUrl = if (movies.isNotEmpty()) {
-                                    val firstMovie = movies[0]
-                                    firstMovie.poster_path.toString()
-                                    firstMovie.poster_path ?: ""
-                                } else {
-                                    ""
-                                }
-
-                                val getOverview = if (movies.isNotEmpty()) {
-                                    val beginningMovie = movies[0]
-                                    beginningMovie.overview.toString()
-                                    beginningMovie.overview ?: ""
-                                } else {
-                                    ""
-                                }
-
-
-                                val yearIsValid: Boolean = try {
-                                    val intYear = year.toInt()
-                                    intYear > 1900 && intYear < LocalDate.now().year + 1
-                                } catch (e: Exception) {
-                                    false
-                                }
-
-                                if (runTime.isEmpty()) {
-                                    validationLabel.value = "Runtime"
-                                } else if (title.isEmpty()) {
-                                    validationLabel.value = "Title"
-                                } else if (starring.isEmpty()) {
-                                    validationLabel.value = "Starring"
-                                } else if (!yearIsValid) {
-                                    validationLabel.value = "Year"
-                                }
-
-                                if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
-                                    showValidLogState.value = true
-                                    return@launch
-                                }
-                                val newFilm = Film(
-                                    id = 0,
-                                    runTime.toInt(),
-                                    title,
-                                    poster_path = posterUrl,
-                                    overview = getOverview,
-                                    "",
-                                    year.toInt(),
-                                    starring,
-                                    genre,
-                                    genre2,
-                                )
-                                onFilmEntered(newFilm)
-                            } catch (e: Exception) {
-
-                                Toast.makeText(
-                                    mContext,
-                                    "Error With API; Try Another Film",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                println("Error occurred while making API request: ${e.printStackTrace()}")
-                                println("Error occurred while making API request: ${e.cause} issue one")
+                            val posterUrl = if (movies.isNotEmpty()) {
+                                val firstMovie = movies[0]
+                                firstMovie.poster_path.toString()
+                                firstMovie.poster_path ?: ""
+                            } else {
+                                ""
                             }
+
+                            val getOverview = if (movies.isNotEmpty()) {
+                                val beginningMovie = movies[0]
+                                beginningMovie.overview.toString()
+                                beginningMovie.overview ?: ""
+                            } else {
+                                ""
+                            }
+
+
+                            val yearIsValid: Boolean = try {
+                                val intYear = year.toInt()
+                                intYear > 1900 && intYear < LocalDate.now().year + 1
+                            } catch (e: Exception) {
+                                false
+                            }
+
+                            if (runTime.isEmpty()) {
+                                validationLabel.value = "Runtime"
+                            } else if (title.isEmpty()) {
+                                validationLabel.value = "Title"
+                            } else if (starring.isEmpty()) {
+                                validationLabel.value = "Starring"
+                            } else if (!yearIsValid) {
+                                validationLabel.value = "Year"
+                            }
+
+                            if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
+                                showValidLogState.value = true
+                                return@launch
+                            }
+                            val newFilm = Film(
+                                id = filmToEdit?.id ?: 0,
+                                runTime.toInt(),
+                                title,
+                                poster_path = posterUrl,
+                                overview = getOverview,
+                                "",
+                                year.toInt(),
+                                starring,
+                                genre,
+                                genre2,
+                            )
+                            onFilmEntered(newFilm)
+                        } catch (e: Exception) {
+
+                            Toast.makeText(
+                                mContext,
+                                "Error With API; Try Another Film",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            println("Error occurred while making API request: ${e.printStackTrace()}")
+                            println("Error occurred while making API request: ${e.cause} issue one")
                         }
-                    })
-                }
+                    }
+                })
             }
+        }
 
-            if (showValidLogState.value) {
-                ValidationDialog(label = validationLabel.value,
-                    onDismiss = { showValidLogState.value = false })
-            }
+        if (showValidLogState.value) {
+            ValidationDialog(label = validationLabel.value,
+                onDismiss = { showValidLogState.value = false })
+        }
 
-            if (showDialogState.value) {
-                AlertDialog(
-                    onDismissRequest = { showDialogState.value = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            showDialogState.value = false
-                        }) { Text(text = "OK") }
-                    },
-                    text = { Text(text = "This film already exists") },
-                )
-            }
+        if (showDialogState.value) {
+            AlertDialog(
+                onDismissRequest = { showDialogState.value = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialogState.value = false
+                    }) { Text(text = "OK") }
+                },
+                text = { Text(text = "This film already exists") },
+            )
         }
     }
 }
@@ -449,7 +364,7 @@ fun AddGenre2Field(
 
 
 @Composable
-fun AddFilms(onSaveTap: () -> Unit) {
+fun SaveFilm(onSaveTap: () -> Unit) {
     FloatingActionButton(onClick = { onSaveTap() }, content = ({
         Icon(
             painter = painterResource(R.drawable.ic_add),
@@ -465,17 +380,6 @@ fun BackButton(onBackTap: () -> Unit) {
         Icon(
             painter = painterResource(R.drawable.ic_back),
             contentDescription = "Back Button",
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-    }))
-}
-
-@Composable
-fun EditFilms(onEditSaveTap: () -> Unit) {
-    FloatingActionButton(onClick = { onEditSaveTap() }, content = ({
-        Icon(
-            painter = painterResource(R.drawable.ic_add),
-            contentDescription = "Save Button",
             tint = MaterialTheme.colorScheme.onBackground
         )
     }))
