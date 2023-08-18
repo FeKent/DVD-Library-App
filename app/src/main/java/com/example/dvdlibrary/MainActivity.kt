@@ -33,6 +33,9 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import com.example.dvdlibrary.viewmodels.AppViewModel
+import com.example.dvdlibrary.viewmodels.IntroViewModel
+import com.example.dvdlibrary.viewmodels.IntroViewModelFactory
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 
@@ -74,28 +77,28 @@ fun DvdApp() {
     val coroutineScope = rememberCoroutineScope()
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
-    var currentSortItemState by remember { mutableStateOf(0) }
-    var sortOrder by remember { mutableStateOf(0) }
+
+
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
-            val filmSorted = when (currentSortItemState) {
-                0 -> if (sortOrder == 0) films.sortedBy { it.title.removePrefix("The ") } else films.sortedByDescending { it.title.removePrefix("The ") }
-                1 -> if (sortOrder == 0) films.sortedWith(compareBy({ it.genre1 } , {it.genre2})) else films.sortedWith(compareBy<Film>({ it.genre1 } , {it.genre2}).reversed())
-                2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
-                3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
-                else -> films.sortedBy { it.title }
-            }
+            val introViewModel: IntroViewModel by viewModel(factory = IntroViewModelFactory(
+                emptyFlow()
+            ))
+            val sortedFilms by introViewModel.sortedFilms.collectAsStateWithLifecycle(initialValue = emptyList())
+            val currentSortItemState by introViewModel.currentSortItemState.collectAsStateWithLifecycle(initialValue = 0)
+            val sortOrder by introViewModel.sortOrder.collectAsStateWithLifecycle(initialValue = 0)
+
             IntroScreen(
-                films = filmSorted,
+                films = sortedFilms,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
                 removeFilm = { film -> coroutineScope.launch { viewModel.deleteFilm(appContext, film)} },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
-                updateSortItem = { newItem -> currentSortItemState = newItem },
+                updateSortItem = { newItem -> introViewModel.currentSortItemState.value = newItem },
                 sortOrder = sortOrder,
-                updateSortOrder = {newItem -> sortOrder = newItem},
+                updateSortOrder = {newItem -> introViewModel.sortOrder.value = newItem},
                 databaseItemCounter = films.size
             )
         }
