@@ -70,7 +70,7 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun DvdApp() {
-    val viewModel: AppViewModel by viewModel()
+    val viewModel: AppViewModel = viewModel()
     val appContext = LocalContext.current
     val films by viewModel.films(appContext).collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -82,8 +82,8 @@ fun DvdApp() {
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
-            val introViewModel: IntroViewModel by viewModel(factory = IntroViewModelFactory(
-                emptyFlow()
+            val introViewModel: IntroViewModel = viewModel(factory = IntroViewModelFactory(
+                viewModel.films(appContext)
             ))
             val sortedFilms by introViewModel.sortedFilms.collectAsStateWithLifecycle(initialValue = emptyList())
             val currentSortItemState by introViewModel.currentSortItemState.collectAsStateWithLifecycle(initialValue = 0)
@@ -99,7 +99,7 @@ fun DvdApp() {
                 updateSortItem = { newItem -> introViewModel.currentSortItemState.value = newItem },
                 sortOrder = sortOrder,
                 updateSortOrder = {newItem -> introViewModel.sortOrder.value = newItem},
-                databaseItemCounter = films.size
+                databaseItemCounter = sortedFilms.size
             )
         }
 
