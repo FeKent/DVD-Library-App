@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,9 @@ import com.example.dvdlibrary.composables.IntroScreen
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.ui.theme.DVDLibraryTheme
 import com.example.dvdlibrary.viewmodels.AppViewModel
+import com.example.dvdlibrary.viewmodels.IntroViewModel
+import com.example.dvdlibrary.viewmodels.IntroViewModelFactory
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 
@@ -67,36 +72,37 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun DvdApp() {
-    val viewModel: AppViewModel by viewModel()
+    val viewModel: AppViewModel = viewModel()
     val appContext = LocalContext.current
-    val films by viewModel.films(appContext).collectAsStateWithLifecycle(initialValue = emptyList())
+    val films by viewModel.films(appContext).collectAsState(initial = emptyList())
 
     val coroutineScope = rememberCoroutineScope()
     val showDialogState = remember { mutableStateOf(false) }
     val navController = rememberNavController()
-    var currentSortItemState by remember { mutableStateOf(0) }
-    var sortOrder by remember { mutableStateOf(0) }
+
+
 
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(Screen.Intro.route) {
-            val filmSorted = when (currentSortItemState) {
-                0 -> if (sortOrder == 0) films.sortedBy { it.title.removePrefix("The ") } else films.sortedByDescending { it.title.removePrefix("The ") }
-                1 -> if (sortOrder == 0) films.sortedWith(compareBy({ it.genre1 } , {it.genre2})) else films.sortedWith(compareBy<Film>({ it.genre1 } , {it.genre2}).reversed())
-                2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
-                3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
-                else -> films.sortedBy { it.title }
-            }
+            val introViewModel: IntroViewModel = viewModel(factory = IntroViewModelFactory(
+                viewModel.films(appContext)
+            ))
+            val sortedFilms by introViewModel.sortedFilms.collectAsStateWithLifecycle(initialValue = emptyList())
+            val currentSortItemState by introViewModel.currentSortItemState.collectAsStateWithLifecycle(initialValue = 0)
+            val sortOrder by introViewModel.sortOrder.collectAsStateWithLifecycle(initialValue = 0)
+            val removeFilm: (Film) -> Unit = {film -> coroutineScope.launch{viewModel.deleteFilm(appContext, film)}}
+
             IntroScreen(
-                films = filmSorted,
+                films = sortedFilms,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { viewModel.deleteFilm(appContext, film)} },
+                removeFilm = {film -> removeFilm(film); navController.navigate("intro") },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
-                updateSortItem = { newItem -> currentSortItemState = newItem },
+                updateSortItem = { newItem -> introViewModel.currentSortItemState.value = newItem },
                 sortOrder = sortOrder,
-                updateSortOrder = {newItem -> sortOrder = newItem},
-                databaseItemCounter = films.size
+                updateSortOrder = {newItem -> introViewModel.sortOrder.value = newItem},
+                databaseItemCounter = sortedFilms.size
             )
         }
 
