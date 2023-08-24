@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,7 +74,7 @@ sealed class Screen(val route: String) {
 fun DvdApp() {
     val viewModel: AppViewModel = viewModel()
     val appContext = LocalContext.current
-    val films by viewModel.films(appContext).collectAsStateWithLifecycle(initialValue = emptyList())
+    val films by viewModel.films(appContext).collectAsState(initial = emptyList())
 
     val coroutineScope = rememberCoroutineScope()
     val showDialogState = remember { mutableStateOf(false) }
@@ -88,12 +90,13 @@ fun DvdApp() {
             val sortedFilms by introViewModel.sortedFilms.collectAsStateWithLifecycle(initialValue = emptyList())
             val currentSortItemState by introViewModel.currentSortItemState.collectAsStateWithLifecycle(initialValue = 0)
             val sortOrder by introViewModel.sortOrder.collectAsStateWithLifecycle(initialValue = 0)
+            val removeFilm: (Film) -> Unit = {film -> coroutineScope.launch{viewModel.deleteFilm(appContext, film)}}
 
             IntroScreen(
                 films = sortedFilms,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = { film -> coroutineScope.launch { viewModel.deleteFilm(appContext, film)} },
+                removeFilm = {film -> removeFilm(film); navController.navigate("intro") },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
                 updateSortItem = { newItem -> introViewModel.currentSortItemState.value = newItem },
