@@ -1,5 +1,6 @@
 package com.example.dvdlibrary.composables
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -142,16 +143,19 @@ fun AddScreen(
                                 response.results.filter { it.media_type.equals("movie") }
                             val mediaTv = response.results.filter { it.media_type.equals("tv") }
 
-                            val movies =
-                                mediaMovies + mediaTv
-                                    .sortedBy {
-                                        val resultYearInt = it.release_date?.take(4)?.toInt()
-                                        val defaultYear = (Int.MAX_VALUE / 2)
+                            val movies = (mediaMovies + mediaTv)
+                                .sortedWith(compareBy
+                                { media ->
+                                    val resultYearInt = media.release_date?.take(4)?.toIntOrNull()
+                                    if (resultYearInt == year.toInt()) {
+                                        -1
+                                    } else {
+                                        val defaultYear = Int.MAX_VALUE / 2
                                         val distanceFromInputYear =
                                             abs((resultYearInt ?: defaultYear) - year.toInt())
                                         distanceFromInputYear
                                     }
-
+                                })
 
                             val posterUrl = if (movies.isNotEmpty()) {
                                 val firstMovie = movies[0]
@@ -168,7 +172,6 @@ fun AddScreen(
                             } else {
                                 ""
                             }
-
 
                             val yearIsValid: Boolean = try {
                                 val intYear = year.toInt()
