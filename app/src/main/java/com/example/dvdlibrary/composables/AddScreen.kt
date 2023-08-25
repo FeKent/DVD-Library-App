@@ -146,13 +146,21 @@ fun AddScreen(
                             val movies = (mediaMovies + mediaTv)
                                 .sortedWith(compareBy
                                 { media ->
-                                    val resultYearInt = media.release_date?.take(4)?.toIntOrNull()
-                                    if (resultYearInt == year.toInt()) {
-                                        -1
-                                    } else {
+                                    if (media.media_type == "movie") {
+                                        val resultYearInt =
+                                            media.release_date?.take(4)?.toIntOrNull()
                                         val defaultYear = Int.MAX_VALUE / 2
                                         val distanceFromInputYear =
                                             abs((resultYearInt ?: defaultYear) - year.toInt())
+                                        distanceFromInputYear
+                                    } else {
+                                        val resultYearInt =
+                                            media.first_airdate?.take(4)?.toIntOrNull()
+                                        val defaultYear = Int.MAX_VALUE / 2
+                                        val distanceFromInputYear =
+                                            abs(
+                                                (resultYearInt ?: defaultYear) - year.toInt()
+                                            )
                                         distanceFromInputYear
                                     }
                                 })
