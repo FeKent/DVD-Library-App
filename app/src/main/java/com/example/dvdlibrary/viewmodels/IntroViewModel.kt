@@ -6,19 +6,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.dvdlibrary.data.DvdAppDatabase
 import com.example.dvdlibrary.data.Film
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 
-class IntroViewModel(private val films: Flow<List<Film>>) : ViewModel() {
+class IntroViewModel(private val database: DvdAppDatabase) : ViewModel() {
 
     var currentSortItemState = MutableStateFlow(0)
     var sortOrder = MutableStateFlow(0)
 
     val sortedFilms: Flow<List<Film>> =
-        combine(films, currentSortItemState, sortOrder) { films, currentSortItemState, sortOrder ->
+        combine(database.filmsDao().allFilms(), currentSortItemState, sortOrder) { films, currentSortItemState, sortOrder ->
             when (currentSortItemState) {
                 0 -> if (sortOrder == 0) films.sortedBy { it.title.removePrefix("The ") } else films.sortedByDescending {
                     it.title.removePrefix(
@@ -36,15 +37,16 @@ class IntroViewModel(private val films: Flow<List<Film>>) : ViewModel() {
 
                 2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
                 3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
+                4 -> if (sortOrder == 0) films.sortedBy { it.id } else films.sortedByDescending { it.id }
                 else -> films.sortedBy { it.title }
             }
         }
 }
 
-class IntroViewModelFactory(private val films: Flow<List<Film>>) : ViewModelProvider.Factory {
+class IntroViewModelFactory(private val database: DvdAppDatabase) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(films = films) as T
+        return IntroViewModel(database = database) as T
     }
 
 }
