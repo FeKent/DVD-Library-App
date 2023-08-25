@@ -12,6 +12,7 @@ enum class Genre(val printName: String, @DrawableRes val icon: Int) {
     Comedy("Comedy", R.drawable.genre_comedy),
     Documentary("Documentary", R.drawable.genre_documentary) ,
     Drama("Drama", R.drawable.genre_drama),
+    Family("Family", R.drawable.genre_family),
     Fantasy("Fantasy", R.drawable.genre_fantasy),
     Halloween("Halloween", R.drawable.genre_halloween),
     Historical("Historical", R.drawable.genre_historical),
