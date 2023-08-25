@@ -138,6 +138,7 @@ fun AddScreen(
                                 )
                             }
 
+
                             val mediaMovies =
                                 response.results.filter { it.media_type.equals("movie") }
                             val mediaTv = response.results.filter { it.media_type.equals("tv") }
