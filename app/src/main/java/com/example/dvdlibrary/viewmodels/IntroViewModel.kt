@@ -37,6 +37,7 @@ class IntroViewModel(private val database: DvdAppDatabase) : ViewModel() {
 
                 2 -> if (sortOrder == 0) films.sortedBy { it.year } else films.sortedByDescending { it.year }
                 3 -> if (sortOrder == 0) films.sortedBy { it.runtime } else films.sortedByDescending { it.runtime }
+                4 -> if (sortOrder == 0) films.sortedBy { it.id } else films.sortedByDescending { it.id }
                 else -> films.sortedBy { it.title }
             }
         }

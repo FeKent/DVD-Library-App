@@ -69,7 +69,7 @@ fun IntroScreen(
     modifier: Modifier = Modifier,
 ) {
     var searchItem by remember { mutableStateOf("") }
-    val sortItems = arrayOf("Title", "Genre", "Year", "Runtime")
+    val sortItems = arrayOf("Title", "Genre", "Year", "Runtime", "Order Added")
     val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
     var currentFilterItem by remember { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
