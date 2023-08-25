@@ -134,7 +134,7 @@ fun AddScreen(
                         try {
                             val response = withContext(coroutineContext) {
                                 TmdbApi.service.getPosters(
-                                    "Bearer $apiKey", title, year
+                                    "Bearer $apiKey", "\"$title\"", year
                                 )
                             }
 
