@@ -65,8 +65,12 @@ This application allows you to create, read, update, and display data about a fi
 - A Flip Card was used to animate the poster revealing the overview on the flip side of the card
 
 
+---
 
+# Acknowledgements
 
+- The API used: https://www.themoviedb.org/
+- Genre Icons were sourced from: https://icons8.com
 
 
 
