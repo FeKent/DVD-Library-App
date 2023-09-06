@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -68,10 +69,10 @@ fun IntroScreen(
     databaseItemCounter: Int,
     modifier: Modifier = Modifier,
 ) {
-    var searchItem by remember { mutableStateOf("") }
+    var searchItem by rememberSaveable { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime", "Order Added")
     val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
-    var currentFilterItem by remember { mutableStateOf(0) }
+    var currentFilterItem by rememberSaveable { mutableStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
