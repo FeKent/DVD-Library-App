@@ -63,6 +63,7 @@ This application allows you to create, read, update, and display data about a fi
 - Coroutines were used to execute database functions and API calls asynchronously
 - ViewModel was used to separate logic from the composables in the app navigation
 - A Flip Card was used to animate the poster revealing the overview on the flip side of the card
+- [RevealSwipe](https://github.com/ch4rl3x/RevealSwipe/tree/main) library was used to make the Update & Delete film functions more user friendly
 
 
 ---
