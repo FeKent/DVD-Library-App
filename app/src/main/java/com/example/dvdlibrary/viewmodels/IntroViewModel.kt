@@ -1,9 +1,5 @@
 package com.example.dvdlibrary.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.dvdlibrary.data.DvdAppDatabase
@@ -11,7 +7,6 @@ import com.example.dvdlibrary.data.Film
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 
 class IntroViewModel(private val database: DvdAppDatabase) : ViewModel() {
 

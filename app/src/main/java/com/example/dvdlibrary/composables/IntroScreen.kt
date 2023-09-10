@@ -24,6 +24,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -35,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -54,6 +59,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
+import de.charlex.compose.RevealDirection
+import de.charlex.compose.RevealSwipe
+
 
 @Composable
 fun IntroScreen(
@@ -72,7 +80,7 @@ fun IntroScreen(
     var searchItem by rememberSaveable { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime", "Order Added")
     val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
-    var currentFilterItem by rememberSaveable { mutableStateOf(0) }
+    var currentFilterItem by rememberSaveable { mutableIntStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
@@ -175,25 +183,34 @@ fun IntroScreen(
                     }
 
                     3 -> films.filter { film ->
-                        val genre1Matches = film.genre1.printName.lowercase().contains(searchItem.lowercase())
-                        val genre2Matches = film.genre2?.printName?.lowercase()?.contains(searchItem.lowercase()) ?: false
+                        val genre1Matches =
+                            film.genre1.printName.lowercase().contains(searchItem.lowercase())
+                        val genre2Matches =
+                            film.genre2?.printName?.lowercase()?.contains(searchItem.lowercase())
+                                ?: false
                         genre1Matches || genre2Matches
                     }
+
                     else -> emptyList()
                 }
 
                 filmFilters
-                    .forEach {currentFilm ->
+                    .forEach { currentFilm ->
                         val filmsWithTitle = filmFilters.filter { it.title == currentFilm.title }
                         FilmRow(
                             film = currentFilm,
                             filmsWithTitle = filmsWithTitle,
                             onFilmTap = onFilmTap,
                             removeFilm = removeFilm,
-                            editFilm = editFilm
+                            editFilm = editFilm,
+                            modifier = Modifier
                         )
                     }
             }
+
+
+
+
             Spacer(modifier = Modifier.height(24.dp))
             FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
                 Icon(
@@ -235,7 +252,12 @@ fun SearchTextField(
         singleLine = true,
         modifier = modifier,
         label = { Text(text = label, fontStyle = FontStyle.Italic) },
-        leadingIcon = { Icon(painter = painterResource(R.drawable.ic_search), "Search Icon") },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                "Search Icon"
+            )
+        },
         trailingIcon = {
             IconButton(onClick = { focusManager.clearFocus(); onClearTap() }) {
                 Icon(painter = painterResource(R.drawable.ic_clear), "Clear Icon")
@@ -243,7 +265,8 @@ fun SearchTextField(
         })
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun FilmRow(
     film: Film,
@@ -279,42 +302,85 @@ fun FilmRow(
         film.title
     }
 
-    Box(
-        modifier = modifier
-            .padding(horizontal = 24.dp)
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .fillMaxWidth()
-            .combinedClickable(onClick = { onFilmTap(film) },
-                onDoubleClick = { showDeleteDialog.value = true },
-                onLongClick = { showEditDialog.value = true })
-    ) {
-        Row {
-            Spacer(modifier = modifier.padding(4.dp))
-            Image(
-                painter = painterResource(film.genre1.icon),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(alignment = CenterVertically)
-                    .width(24.dp)
-            )
-            Text(
-                text = displayTitle,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Justify,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .weight(2f)
-            )
+    Box {
+        RevealSwipe(
+            directions = setOf(
+                RevealDirection.EndToStart,
+                RevealDirection.StartToEnd
+            ),
+            contentColor = MaterialTheme.colorScheme.onBackground,
 
-            Image(
-                painter = painterResource(film.genre2?.icon ?: R.drawable.ic_clearcolor),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(alignment = CenterVertically)
-                    .width(24.dp)
-            )
-            Spacer(modifier = modifier.padding(4.dp))
+            backgroundCardStartColor = MaterialTheme.colorScheme.primaryContainer,
+            hiddenContentStart = { Edit() },
+            onBackgroundStartClick = { showEditDialog.value = true },
+
+            backgroundCardEndColor = MaterialTheme.colorScheme.primaryContainer,
+            hiddenContentEnd = { Delete() },
+            onBackgroundEndClick = { showDeleteDialog.value = true }
+        ) {
+            Box(
+                modifier = modifier
+                    .padding(horizontal = 24.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                    .fillMaxWidth()
+                    .combinedClickable(onClick = { onFilmTap(film) })
+            ) {
+                Row {
+                    Spacer(modifier = modifier.padding(4.dp))
+                    Image(
+                        painter = painterResource(film.genre1.icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(alignment = CenterVertically)
+                            .width(24.dp)
+                    )
+                    Text(
+                        text = displayTitle,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(2f)
+                    )
+
+                    Image(
+                        painter = painterResource(
+                            film.genre2?.icon ?: R.drawable.ic_clearcolor
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(alignment = CenterVertically)
+                            .width(24.dp)
+                    )
+                    Spacer(modifier = modifier.padding(4.dp))
+                }
+                Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
+            }
         }
-        Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
+    }
+}
+
+
+@Composable
+private fun Edit() {
+    Row {
+        Icon(
+            Icons.Filled.Edit,
+            "Edit Film",
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+        )
+    }
+}
+
+@Composable
+private fun Delete() {
+    Row {
+        Icon(
+            Icons.Filled.Delete,
+            "Delete Film",
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+        )
     }
 }
