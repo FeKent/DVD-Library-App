@@ -127,6 +127,7 @@ fun DvdApp() {
                 showDialogState = showDialogState
             )
         }
+
         composable(
             Screen.Edit.route,
             arguments = listOf(navArgument("filmId") { type = NavType.IntType })
