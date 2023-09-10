@@ -208,9 +208,6 @@ fun IntroScreen(
                     }
             }
 
-
-
-
             Spacer(modifier = Modifier.height(24.dp))
             FloatingActionButton(onClick = { onAddBtnTap() }, content = ({
                 Icon(
@@ -316,7 +313,7 @@ fun FilmRow(
 
             backgroundCardEndColor = MaterialTheme.colorScheme.primaryContainer,
             hiddenContentEnd = { Delete() },
-            onBackgroundEndClick = { showDeleteDialog.value = true }
+            onBackgroundEndClick = { showDeleteDialog.value = true },
         ) {
             Box(
                 modifier = modifier
