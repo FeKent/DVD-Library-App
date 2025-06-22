@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dvdlibrary.BuildConfig
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
@@ -59,15 +60,12 @@ fun AddScreen(
     val validationLabel = remember { mutableStateOf("") }
     val mContext = LocalContext.current
     val posterScope = CoroutineScope(Dispatchers.Main)
-    val apiKey =
-        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
+    val apiKey = BuildConfig.MY_API_KEY
 
     val isEditMode = filmToEdit != null
 
     var title by remember { mutableStateOf(filmToEdit?.title ?: "") }
-    var runTime by remember { mutableStateOf(filmToEdit?.runtime?.toString() ?: "") }
     var year by remember { mutableStateOf(filmToEdit?.year?.toString() ?: "") }
-    var starring by remember { mutableStateOf(filmToEdit?.starring ?: "") }
     var genre by remember { mutableStateOf(filmToEdit?.genre1 ?: Genre.Action) }
     var genre2: Genre? by remember { mutableStateOf(filmToEdit?.genre2) }
 
@@ -93,21 +91,9 @@ fun AddScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             AddNumField(
-                label = "Runtime",
-                value = runTime,
-                onValueChange = { runTime = it },
-                modifier = Modifier.fillMaxWidth()
-            )
-            AddNumField(
                 label = "Year",
                 value = year,
                 onValueChange = { year = it },
-                modifier = Modifier.fillMaxWidth()
-            )
-            AddTextField(
-                label = "Starring",
-                value = starring,
-                onValueChange = { starring = it },
                 modifier = Modifier.fillMaxWidth()
             )
             AddGenre1Field(
@@ -132,7 +118,7 @@ fun AddScreen(
                 SaveFilm(onSaveTap = {
                     posterScope.launch {
                         try {
-                            val response = withContext(coroutineContext) {
+                            val posterResponse = withContext(coroutineContext) {
                                 TmdbApi.service.getPosters(
                                     "Bearer $apiKey", "\"$title\"", year
                                 )
@@ -140,22 +126,24 @@ fun AddScreen(
 
 
                             val mediaMovies =
-                                response.results.filter { it.media_type.equals("movie") }
-                            val mediaTv = response.results.filter { it.media_type.equals("tv") }
+                                posterResponse.results.filter { it.media_type.equals("movie") }
+                            val mediaTv =
+                                posterResponse.results.filter { it.media_type.equals("tv") }
 
                             val movies = (mediaMovies + mediaTv)
-                                .sortedWith(compareBy
-                                { media ->
-                                    val resultYearInt = if (media.media_type == "movie") {
-                                        media.release_date?.take(4)?.toIntOrNull()
-                                    } else {
-                                        media.first_airdate?.take(4)?.toIntOrNull()
-                                    }
+                                .sortedWith(
+                                    compareBy
+                                    { media ->
+                                        val resultYearInt = if (media.media_type == "movie") {
+                                            media.release_date?.take(4)?.toIntOrNull()
+                                        } else {
+                                            media.first_airdate?.take(4)?.toIntOrNull()
+                                        }
                                         val defaultYear = Int.MAX_VALUE / 2
                                         val distanceFromInputYear =
                                             abs((resultYearInt ?: defaultYear) - year.toInt())
                                         distanceFromInputYear
-                                })
+                                    })
 
                             val posterUrl = if (movies.isNotEmpty()) {
                                 val firstMovie = movies[0]
@@ -173,6 +161,33 @@ fun AddScreen(
                                 ""
                             }
 
+
+
+                            if (movies.isNotEmpty()) {
+                                val selectedMovie = movies[0]
+                                val id = selectedMovie.id
+
+                                val correctYear = if (selectedMovie.media_type == "movie") {
+                                    selectedMovie.release_date?.take(4)?.toIntOrNull()
+                                } else {
+                                    selectedMovie.first_airdate?.take(4)?.toIntOrNull()
+                                } ?: year.toInt()
+                                val runtimeResponse = withContext(coroutineContext) {
+                                    TmdbApi.service.getRuntime("Bearer $apiKey", id!!)
+                                }
+
+                                val runtime = runtimeResponse.runtime
+
+                                val actorResponse =
+                                    withContext(coroutineContext) {
+                                        TmdbApi.service.getCast("Bearer $apiKey", id!!)
+                                    }
+
+                                val castMembers = actorResponse.cast.sortedBy { it.cast_id }.take(4).map { it.name }
+
+                                val starring = castMembers.joinToString(", ")
+
+
                             val yearIsValid: Boolean = try {
                                 val intYear = year.toInt()
                                 intYear > 1900 && intYear < LocalDate.now().year + 1
@@ -180,9 +195,8 @@ fun AddScreen(
                                 false
                             }
 
-                            if (runTime.isEmpty()) {
-                                validationLabel.value = "Runtime"
-                            } else if (title.isEmpty()) {
+
+                             if (title.isEmpty()) {
                                 validationLabel.value = "Title"
                             } else if (starring.isEmpty()) {
                                 validationLabel.value = "Starring"
@@ -190,24 +204,24 @@ fun AddScreen(
                                 validationLabel.value = "Year"
                             }
 
-                            if (runTime.isEmpty() || title.isEmpty() || starring.isEmpty() || !yearIsValid) {
+                            if ( title.isEmpty() || starring.isEmpty() || !yearIsValid) {
                                 showValidLogState.value = true
                                 return@launch
                             }
                             val newFilm = Film(
                                 id = filmToEdit?.id ?: 0,
-                                runTime.toInt(),
+                                runtime,
                                 title,
                                 poster_path = posterUrl,
                                 overview = getOverview,
                                 "",
-                                year.toInt(),
+                                correctYear,
                                 starring,
                                 genre,
                                 genre2,
                             )
                             onFilmEntered(newFilm)
-                        } catch (e: Exception) {
+                        } }catch (e: Exception) {
 
                             Toast.makeText(
                                 mContext,
@@ -224,7 +238,8 @@ fun AddScreen(
         }
 
         if (showValidLogState.value) {
-            ValidationDialog(label = validationLabel.value,
+            ValidationDialog(
+                label = validationLabel.value,
                 onDismiss = { showValidLogState.value = false })
         }
 

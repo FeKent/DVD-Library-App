@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
-class IntroViewModel(private val database: DvdAppDatabase) : ViewModel() {
+class IntroViewModel(database: DvdAppDatabase) : ViewModel() {
 
     var currentSortItemState = MutableStateFlow(0)
     var sortOrder = MutableStateFlow(0)

@@ -56,9 +56,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
+import com.example.dvdlibrary.data.Genre
 import de.charlex.compose.RevealDirection
 import de.charlex.compose.RevealSwipe
 
@@ -88,7 +90,7 @@ fun IntroScreen(
         Column(
             modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
+            Row(modifier = Modifier.weight(1f)) {
                 Box {
                     val isCurrentSortOrder: Boolean = 0 == sortOrder
                     val iconRes = if (isCurrentSortOrder) {
@@ -106,7 +108,8 @@ fun IntroScreen(
                             .clickable { updateSortOrder(if (isCurrentSortOrder) 1 else 0) }
                     )
 
-                    Icon(painter = painterResource(R.drawable.ic_sort),
+                    Icon(
+                        painter = painterResource(R.drawable.ic_sort),
                         contentDescription = "Sort Button",
                         modifier = Modifier
                             .padding(top = 30.dp)
@@ -143,7 +146,8 @@ fun IntroScreen(
                 )
 
                 Box {
-                    Icon(painter = painterResource(R.drawable.ic_filter),
+                    Icon(
+                        painter = painterResource(R.drawable.ic_filter),
                         contentDescription = "Filter Button",
                         modifier = Modifier
                             .padding(top = 20.dp)
@@ -168,7 +172,7 @@ fun IntroScreen(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .weight(1f),
+                    .weight(4f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
@@ -217,7 +221,7 @@ fun IntroScreen(
                 )
             }))
             Spacer(modifier = Modifier.height(8.dp))
-            Row {
+            Row(modifier = Modifier.weight(0.5f)) {
                 Text(text = "Films in Library:", fontStyle = FontStyle.Italic)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "$databaseItemCounter", fontWeight = FontWeight.Bold)
@@ -238,7 +242,8 @@ fun SearchTextField(
 ) {
     val focusManager = LocalFocusManager.current
 
-    TextField(value = searchTerm,
+    TextField(
+        value = searchTerm,
         onValueChange = { onSearchTermChange(it) },
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(
@@ -379,4 +384,26 @@ private fun Delete() {
                 .fillMaxWidth(0.5f)
         )
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun IntroScreenPreview() {
+    IntroScreen(
+        films = listOf(
+            Film(
+                1,
+                122,
+                "28 Days Later",
+                "",
+                "zombies",
+                "zombies",
+                2001,
+                "Cillian Murphy",
+                Genre.Zombie,
+                null
+            )
+        ),
+        {}, {}, {}, {}, 1, {}, 3, {}, 1
+    )
 }
