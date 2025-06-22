@@ -161,9 +161,17 @@ fun AddScreen(
                                 ""
                             }
 
-                            if (movies.isNotEmpty()) {
-                                val id = movies[0].id
 
+
+                            if (movies.isNotEmpty()) {
+                                val selectedMovie = movies[0]
+                                val id = selectedMovie.id
+
+                                val correctYear = if (selectedMovie.media_type == "movie") {
+                                    selectedMovie.release_date?.take(4)?.toIntOrNull()
+                                } else {
+                                    selectedMovie.first_airdate?.take(4)?.toIntOrNull()
+                                } ?: year.toInt()
                                 val runtimeResponse = withContext(coroutineContext) {
                                     TmdbApi.service.getRuntime("Bearer $apiKey", id!!)
                                 }
@@ -207,7 +215,7 @@ fun AddScreen(
                                 poster_path = posterUrl,
                                 overview = getOverview,
                                 "",
-                                year.toInt(),
+                                correctYear,
                                 starring,
                                 genre,
                                 genre2,
