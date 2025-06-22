@@ -43,5 +43,4 @@ class IntroViewModelFactory(private val database: DvdAppDatabase) : ViewModelPro
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return IntroViewModel(database = database) as T
     }
-
 }
