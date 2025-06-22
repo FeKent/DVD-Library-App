@@ -40,6 +40,7 @@ import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
 import com.example.dvdlibrary.data.Genre
 import com.example.dvdlibrary.networking.TmdbApi
+import com.example.dvdlibrary.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,8 +60,7 @@ fun AddScreen(
     val validationLabel = remember { mutableStateOf("") }
     val mContext = LocalContext.current
     val posterScope = CoroutineScope(Dispatchers.Main)
-    val apiKey =
-        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmZjJiN2NiZTdlMzc4NGQwN2U1Y2I3NDUxOTFmODYxZSIsInN1YiI6IjY0YTBhYTU2ODFkYTM5MDE0ZDQ5ZDM0ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.P_rg4mB-Xp5yXhSp9J_qSkf-9aZ134SIzEZz_HlsQj0"
+    val apiKey = BuildConfig.MY_API_KEY
 
     val isEditMode = filmToEdit != null
 
