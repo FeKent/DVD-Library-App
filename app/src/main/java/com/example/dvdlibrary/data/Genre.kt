@@ -25,7 +25,9 @@ enum class Genre(val printName: String, @DrawableRes val icon: Int) {
     SciFi("Sci-Fi", R.drawable.genre_scifi),
     Sports("Sports", R.drawable.genre_sports),
     Thriller("Thriller", R.drawable.genre_thriller),
+    Vampire("Vampire", R.drawable.genre_vampire),
     War("War", R.drawable.genre_war),
     Western("Western", R.drawable.genre_western),
+    Werewolf("Werewolf", R.drawable.genre_werewolf),
     Zombie("Zombie", R.drawable.genre_zombie),
 }
