@@ -19,7 +19,7 @@ interface TmdbService {
         @Path("movie_id") databaseId: Int,
     ): TmdbMovieCastSearchResults
 
-    @GET("3/movie/{movie_id")
+    @GET("3/movie/{movie_id}")
     suspend fun getRuntime(
         @Header("Authorization") apiKey: String,
         @Path("movie_id") databaseId: Int,
