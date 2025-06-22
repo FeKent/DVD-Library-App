@@ -55,7 +55,7 @@ This application allows you to create, read, update, and display data about a fi
    
 # Technologies Used
 
-- Several Manual Dependency Injections were used to add multiple necessary reference libraries (Material 3, Room, Moshi, Retrofit, Coroutines, etc.)
+- Several dependencies were used (Material 3, Room, Moshi, Retrofit, Coroutines, etc.)
 - Jetpack Compose and Material 3 were used to create the UI
 - Room was used to make and use the film Database
 - Moshi and Retrofit were used to make the API service
