@@ -2,6 +2,7 @@ package com.example.dvdlibrary.networking
 
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TmdbService {
@@ -12,9 +13,9 @@ interface TmdbService {
         @Query("year") year: String,
     ): TmdbMoviePosterSearchResults
 
-    @GET("3/movie")
+    @GET("3/movie/{movie_id}/credits")
     suspend fun getCast(
         @Header("Authorization") apiKey: String,
-        @Query("movie_id") databaseId: Int,
+        @Path("movie_id") databaseId: Int,
     ): TmdbMovieCastSearchResults
 }
