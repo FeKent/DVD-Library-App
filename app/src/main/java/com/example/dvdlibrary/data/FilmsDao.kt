@@ -25,6 +25,11 @@ interface FilmsDao {
 
     @Query ("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
     suspend fun getFilm(filmId: Int): Film
+
+    @Query("SELECT COUNT(*) FROM film")
+    fun filmCount(): Flow<Int>
+
+
 //  Sorted By Queries
 //  Title
     @Query("""
