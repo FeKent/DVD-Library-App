@@ -27,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.room.Room
 import com.example.dvdlibrary.composables.AddScreen
 import com.example.dvdlibrary.composables.FilmScreen
@@ -89,23 +90,36 @@ fun DvdApp() {
             val introViewModel: IntroViewModel = viewModel(factory = IntroViewModelFactory(
                 database = database)
             )
-            val sortedFilms by introViewModel.sortedFilms.collectAsStateWithLifecycle(initialValue = emptyList())
+            val databaseItemCounter by database.filmsDao()
+                .filmCount()
+                .collectAsStateWithLifecycle(initialValue = 0)
+            val pagedFilms = introViewModel.pagedFilms.collectAsLazyPagingItems()
             val currentSortItemState by introViewModel.currentSortItemState.collectAsStateWithLifecycle(initialValue = 0)
             val sortOrder by introViewModel.sortOrder.collectAsStateWithLifecycle(initialValue = 0)
+            val searchTerm by introViewModel.searchTerm.collectAsStateWithLifecycle()
+            val currentFilterItem by introViewModel.currentFilterItem.collectAsStateWithLifecycle()
 
 
             IntroScreen(
-                films = sortedFilms,
+                films = pagedFilms,
                 onAddBtnTap = { navController.navigate(Screen.Add.route) },
                 onFilmTap = { film -> navController.navigate("details/${film.id}") },
-                removeFilm = {film -> introScope.launch{ database.filmsDao().delete(film) } },
+                removeFilm = { film -> introScope.launch{ database.filmsDao().delete(film) } },
                 editFilm = { film -> navController.navigate("edit/${film.id}") },
                 currentSortItem = currentSortItemState,
                 updateSortItem = { newItem -> introViewModel.currentSortItemState.value = newItem },
                 sortOrder = sortOrder,
-                updateSortOrder = {newItem -> introViewModel.sortOrder.value = newItem},
-                databaseItemCounter = sortedFilms.size
-            )
+                updateSortOrder = { newItem -> introViewModel.sortOrder.value = newItem},
+                currentFilterItem = currentFilterItem,
+                updateFilterItem = {
+                    introViewModel.currentFilterItem.value = it
+                },
+
+                searchTerm = searchTerm,
+                updateSearchTerm = {
+                    introViewModel.searchTerm.value = it
+                },
+                databaseItemCounter = databaseItemCounter            )
         }
 
         composable(Screen.Add.route) {
