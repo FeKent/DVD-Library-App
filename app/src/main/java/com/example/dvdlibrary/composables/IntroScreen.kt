@@ -20,10 +20,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -39,10 +38,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -56,18 +53,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.example.dvdlibrary.R
 import com.example.dvdlibrary.data.Film
-import com.example.dvdlibrary.data.Genre
 import de.charlex.compose.RevealDirection
 import de.charlex.compose.RevealSwipe
 
 
 @Composable
 fun IntroScreen(
-    films: List<Film>,
+    films: LazyPagingItems<Film>,
     onAddBtnTap: () -> Unit,
     onFilmTap: (Film) -> Unit,
     removeFilm: (Film) -> Unit,
@@ -76,13 +72,15 @@ fun IntroScreen(
     updateSortItem: (Int) -> Unit,
     sortOrder: Int,
     updateSortOrder: (Int) -> Unit,
+    currentFilterItem: Int,
+    updateFilterItem: (Int) -> Unit,
+    searchTerm: String,
+    updateSearchTerm: (String) -> Unit,
     databaseItemCounter: Int,
     modifier: Modifier = Modifier,
 ) {
-    var searchItem by rememberSaveable { mutableStateOf("") }
     val sortItems = arrayOf("Title", "Genre", "Year", "Runtime", "Order Added")
     val filterItems = arrayOf("Title", "Year", "Starring", "Genre")
-    var currentFilterItem by rememberSaveable { mutableIntStateOf(0) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
@@ -136,11 +134,9 @@ fun IntroScreen(
                 }
 
                 SearchTextField(
-                    searchTerm = searchItem,
-                    onSearchTermChange = {
-                        searchItem = it
-                    },
-                    onClearTap = { searchItem = "" },
+                    searchTerm = searchTerm,
+                    onSearchTermChange = updateSearchTerm,
+                    onClearTap = { updateSearchTerm("") },
                     modifier = Modifier.padding(top = 16.dp),
                     label = "Film ${filterItems[currentFilterItem]}"
                 )
@@ -160,7 +156,10 @@ fun IntroScreen(
                         filterItems.forEachIndexed { itemIndex, itemValue ->
                             DropdownMenuItem(
                                 text = { Text(text = itemValue) },
-                                onClick = { currentFilterItem = itemIndex; expandedFilter = false },
+                                onClick = {
+                                    updateFilterItem(itemIndex)
+                                    expandedFilter = false
+                                },
                                 enabled = (itemIndex != currentFilterItem)
                             )
                         }
@@ -169,38 +168,21 @@ fun IntroScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .weight(4f),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            LazyColumn(
+                modifier = Modifier.weight(4f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                items(
+                    count = films.itemCount
+                ) { index ->
 
-                val filmFilters: List<Film> = when (currentFilterItem) {
-                    0 -> films.filter { film ->
-                        film.title.lowercase().contains(searchItem.lowercase())
-                    }
+                    val currentFilm = films[index]
 
-                    1 -> films.filter { film -> film.year.toString().contains(searchItem) }
-                    2 -> films.filter { film ->
-                        film.starring.lowercase().contains(searchItem.lowercase())
-                    }
+                    if (currentFilm != null) {
+                        val filmsWithTitle = films.itemSnapshotList.items.filter {
+                            it.title == currentFilm.title
+                        }
 
-                    3 -> films.filter { film ->
-                        val genre1Matches =
-                            film.genre1.printName.lowercase().contains(searchItem.lowercase())
-                        val genre2Matches =
-                            film.genre2?.printName?.lowercase()?.contains(searchItem.lowercase())
-                                ?: false
-                        genre1Matches || genre2Matches
-                    }
-
-                    else -> emptyList()
-                }
-
-                filmFilters
-                    .forEach { currentFilm ->
-                        val filmsWithTitle = filmFilters.filter { it.title == currentFilm.title }
                         FilmRow(
                             film = currentFilm,
                             filmsWithTitle = filmsWithTitle,
@@ -210,6 +192,7 @@ fun IntroScreen(
                             modifier = Modifier
                         )
                     }
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -384,26 +367,4 @@ private fun Delete() {
                 .fillMaxWidth(0.5f)
         )
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun IntroScreenPreview() {
-    IntroScreen(
-        films = listOf(
-            Film(
-                1,
-                122,
-                "28 Days Later",
-                "",
-                "zombies",
-                "zombies",
-                2001,
-                "Cillian Murphy",
-                Genre.Zombie,
-                null
-            )
-        ),
-        {}, {}, {}, {}, 1, {}, 3, {}, 1
-    )
 }

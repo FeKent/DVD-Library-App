@@ -20,81 +20,121 @@ interface FilmsDao {
     @Update
     suspend fun editFilm(film: Film)
 
-    @Query ("SELECT * FROM film")
+    @Query("SELECT * FROM film")
     fun allFilms(): Flow<List<Film>>
 
-    @Query ("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
+    @Query("SELECT * FROM film WHERE film.id = :filmId LIMIT 1")
     suspend fun getFilm(filmId: Int): Film
 
     @Query("SELECT COUNT(*) FROM film")
     fun filmCount(): Flow<Int>
 
 
-//  Sorted By Queries
+    //  Sorted By Queries
 //  Title
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film
         ORDER BY
             CASE
                 WHEN title LIKE 'The %' THEN SUBSTR(title, 5)
                 ELSE title
             END ASC
-    """)
+    """
+    )
     fun filmsByTitleAsc(): PagingSource<Int, Film>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film
         ORDER BY
             CASE
                 WHEN title LIKE 'The %' THEN SUBSTR(title, 5)
                 ELSE title
             END DESC
-    """)
+    """
+    )
     fun filmsByTitleDesc(): PagingSource<Int, Film>
 
-//  Genre
-    @Query("""
+    //  Genre
+    @Query(
+        """
         SELECT * FROM film
         ORDER BY genre1 ASC, genre2 ASC
-    """)
+    """
+    )
     fun filmsByGenreAsc(): PagingSource<Int, Film>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film
         ORDER BY genre1 DESC, genre2 DESC
-    """)
+    """
+    )
     fun filmsByGenreDesc(): PagingSource<Int, Film>
 
-//  Year
-    @Query("""
+    //  Year
+    @Query(
+        """
         SELECT * FROM film ORDER BY year ASC
-    """)
+    """
+    )
     fun filmsByYearAsc(): PagingSource<Int, Film>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film ORDER BY year DESC
-    """)
+    """
+    )
     fun filmsByYearDesc(): PagingSource<Int, Film>
 
     // Runtime
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film ORDER BY runtime ASC
-    """)
+    """
+    )
     fun filmsByRuntimeAsc(): PagingSource<Int, Film>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film ORDER BY runtime DESC
-    """)
+    """
+    )
     fun filmsByRuntimeDesc(): PagingSource<Int, Film>
 
     // ID
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film ORDER BY id ASC
-    """)
+    """
+    )
     fun filmsByIdAsc(): PagingSource<Int, Film>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM film ORDER BY id DESC
-    """)
+    """
+    )
     fun filmsByIdDesc(): PagingSource<Int, Film>
+
+    //Search/Filter by Queries
+
+    @Query(
+        """
+        SELECT * FROM film
+        WHERE title LIKE '%' || :searchTerm || '%'
+        ORDER BY title ASC
+    """
+    )
+    fun filterByTitle(searchTerm: String): PagingSource<Int, Film>
+
+    @Query(""" SELECT * FROM film WHERE year LIKE '%' || :searchTerm || '%' ORDER BY title ASC """)
+    fun filterByYear(searchTerm: String): PagingSource<Int, Film>
+
+    @Query(""" SELECT * FROM film WHERE starring LIKE '%' || :searchTerm || '%' ORDER BY title ASC """)
+    fun filterByStarring(searchTerm: String): PagingSource<Int, Film>
+
+    @Query(""" SELECT * FROM film WHERE genre1 LIKE '%' || :searchTerm || '%' OR genre2 LIKE '%' || :searchTerm || '%' ORDER BY title ASC """)
+    fun filterByGenre(searchTerm: String): PagingSource<Int, Film>
 }
